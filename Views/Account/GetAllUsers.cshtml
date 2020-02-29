@@ -1,0 +1,8 @@
+﻿@model List<UserViewModel>
+
+    <div>
+        @foreach (var item in Model)
+        {
+            <a href="@Url.Action("UserAccount", "Account", new { id = item.Id}) ">@item.Username</a><br />
+        }
+    </div>

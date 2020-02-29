@@ -1,0 +1,84 @@
+﻿@model IEnumerable<UserViewModel>
+
+@foreach (var user in Model)
+{
+    <div class="following-user">
+        <a style="grid-row-start:1;grid-row-end:3;grid-column-start:1;grid-column-end:2;position:relative;width:100%;padding-bottom:100%;" asp-controller="Account" asp-action="UserAccount" asp-route-id="@user.Id">
+            @if (user.Profile_Picture_URI != null)
+            {
+                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(user.Profile_Picture_URI))" style="position:absolute; width:100%; height:100%; border-radius:50%; margin-left:10px;" />
+
+            }
+            else
+            {
+                <img src="~/Pics/standartPicture.jpg" style="position:absolute; width:100%; height:100%; border-radius:50%; margin-left:10px;" />
+            }
+        </a>
+        <a style="grid-row-start:1;grid-row-end:2;grid-column-start:2;grid-column-end:3;margin-left:10px;font-weight:bold;text-decoration:none;color:black;" asp-controller="Account" asp-action="UserAccount" asp-route-id="@user.Id">@user.Username</a>
+        <p style="grid-row-start:2;grid-row-end:3;grid-column-start:2;grid-column-end:3;margin-left:10px;color:darkgray;">@user.Full_Name</p>
+        
+        <div class="follow-unfollow-buttons">
+            @if (user.Current_User_Following == true)
+            {
+                <a class="unfollow-button" style="margin-right:10px;" data-current-user-id="@user.Id">Following</a>
+                <a class="follow-button" style="display:none; margin-right:10px;" data-current-user-id="@user.Id">Follow</a>
+
+            }
+            else if (user.Current_User_Following == false && user.Id != ViewBag.CurrUserId)
+            {
+                <a class="follow-button" style="margin-right:10px;" data-current-user-id="@user.Id">Follow</a>
+                <a class="unfollow-button" style="display:none; margin-right:10px;" data-current-user-id="@user.Id">Following</a>
+            }
+        </div>
+    </div>
+}
+
+<div id="to-hide" style="display:none;"></div>
+
+
+    <script>
+        $('.unfollow-button').click((e) => {
+            console.log('fired');
+            $.ajax({
+                type: "GET",
+                url: "/Account/UnfollowUser",
+                data: { id: $(e.target).attr('data-current-user-id') },
+                success: (responce) => {
+                    $(e.target).css('display', 'none');
+                    $(e.target).siblings().css('display', 'inline');
+                    $('#number-of-followings :first').text(`${parseInt($('#number-of-followings').text()) - 1}`);
+                    $('#number-of-followings :last').text('followings');
+
+                    $('#number-of-followings :first').css('font-weight', 'bold');
+                },
+                error: (responce) => {
+                    alert('error');
+                }
+            });
+
+
+        });
+        $('.follow-button').click((e) => {
+            console.log('fired');
+            $.ajax({
+                type: "GET",
+                url: "/Account/FollowUser",
+                data: { id: $(e.target).attr('data-current-user-id') },
+                success: (responce) => {
+                    $(e.target).css('display', 'none');
+                    $(e.target).siblings().css('display', 'inline');
+                    $('#number-of-followings :first').text(`${parseInt($('#number-of-followings').text()) + 1}`);
+                    $('#number-of-followings :last').text('followings');
+
+                    $('#number-of-followings :first').css('font-weight', 'bold');
+                },
+                error: (responce) => {
+                    alert('error');
+                }
+            });
+
+
+        });
+    </script>
+
+

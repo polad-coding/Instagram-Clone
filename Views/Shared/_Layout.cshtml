@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - InstagramClone</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/dist/jquery.unobtrusive-ajax.js"></script>
+</head>
+<body>
+    <div class="global-container">
+            <nav class="grid-container">
+                <div class="navigation-left-part"></div>
+                <div class="navigation-central-part">
+                    <a style="grid-column-start:1; grid-column-end:2;position:relative;">
+                        <img src="https://img.icons8.com/metro/26/000000/instagram-new.png" style="position:absolute; right:18%;">
+                        <span style="height:60%; border-right:solid 2px black; position:absolute; right:5%;"></span>
+                    </a>
+                    <a>
+                        <img src="~/Pics/insta.png" style="height:60%;" />
+                    </a>
+                    <div style="grid-column-start:3; grid-column-end:4; display:flex; align-items:center; justify-content:center;">
+                        <a asp-action="AddPost" asp-controller="Account">
+                            <img src="~/Pics/addImage.png" style="width:30px;height:30px;" />
+                        </a>
+                    </div>
+                    @*Delete this action after*@
+                    <a style="grid-column-start:4; grid-column-end:5;" asp-controller="Account" asp-action="GetAllUsers">
+                        <img src="https://img.icons8.com/android/24/000000/compass.png">
+                    </a>
+                    <a style="grid-column-start:5; grid-column-end:6;">
+                        <img src="https://img.icons8.com/ios/28/000000/like.png">
+                    </a>
+                    <a style="grid-column-start:6; grid-column-end:7;" asp-action="UserAccount" asp-controller="Account" asp-route-id="null">
+                        <img src="https://img.icons8.com/cotton/28/000000/person-male--v2.png">
+                    </a>
+                </div>
+                <div class="navigation-right-part"></div>
+            </nav>
+        <main>
+            <div class="main-content">
+                @RenderBody()
+            </div>
+
+        </main>
+
+
+        <footer>
+        </footer>
+
+    </div>
+
+    
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
