@@ -32,6 +32,13 @@ namespace InstagramClone
 
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
 
+            services.Configure<IdentityOptions>(options => {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+            });
+
             services.AddControllersWithViews();
         }
 

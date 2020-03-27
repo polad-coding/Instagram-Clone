@@ -179,3 +179,12 @@ C:\Users\Polad\source\repos\InstagramClone\bin\Debug\netcoreapp3.0\libman.json
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\InstagramClone.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetAuthorGeneralInfo.cshtml.g.cs
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\FollowUser.cshtml.g.cs
+C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetAllCaptions.cshtml.g.cs
+C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetPostStats.cshtml.g.cs
+C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetProperLikeIcon.cshtml.g.cs
+C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetAllPosts.cshtml.g.cs
+C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetAllBookmarks.cshtml.g.cs
+C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetProperBookmarksIcon.cshtml.g.cs
+C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetFollowUnfollowButton.cshtml.g.cs
+C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\Navigate.cshtml.g.cs
+C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\InstagramClone.genruntimeconfig.cache

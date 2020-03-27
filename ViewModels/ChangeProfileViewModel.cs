@@ -13,7 +13,8 @@ namespace InstagramClone.ViewModels
     {
 
         [DataType(DataType.Text)]
-        [Remote("IsUserNameExists","Account",ErrorMessage = "The user with the same user name already exists!")]
+        [Required(ErrorMessage = "Cannot be empty!")]
+        [Remote("IsUserNameExists","Account")]
         public string UserName { get; set; }
 
         [DataType(DataType.Text)]
@@ -24,9 +25,12 @@ namespace InstagramClone.ViewModels
 
         [DataType(DataType.EmailAddress)]
         [Remote(action: "IsEmailExists", controller: "Account")]
+        [Required(ErrorMessage = "Cannot be empty!")]
+
         public string Email { get; set; }
 
         [DataType(DataType.MultilineText)]
+        [MaxLength(250,ErrorMessage = "Bio can have a max of 250 characters")]
         public string Bio { get; set; }
 
         [DataType(DataType.Text)]

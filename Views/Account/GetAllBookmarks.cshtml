@@ -1,0 +1,99 @@
+﻿@model List<PostViewModel>
+
+@foreach (var p in Model)
+{
+    <a>
+        @if (p.Picture != null)
+        {
+            <div style="position:relative;width:100%;padding-bottom:100%;" class="user-photo">
+                <img style='position:absolute; width:100%; height:100%' src="data:image/jpeg;base64,@(Convert.ToBase64String(p.Picture))" data-post-id="@p.Id" data-author-id="@p.IUser_Id" data-number-likes="@p.Number_Of_Likes" />
+                <div class="image-info">
+
+                </div>
+            </div>
+        }
+    </a>
+}
+
+<script>
+        $('.user-photo').click((e) => {
+                        $.ajax({
+                            type: "GET",
+                            url: "/Account/GetProperBookmarksIcon",
+                            data: { postId: $(e.target).attr('data-post-id') },
+                            success: (responce) => {
+                                $('#bookmark-post-button').html(responce);
+                            },
+                            failure: (responce) => {
+
+                            }
+                        });
+                    });
+    $('.user-photo').mouseenter((e) => {
+                        $.ajax({
+                            type: "GET",
+                            url: "/Account/GetPostStats",
+                            data: { postId: $(e.target).attr('data-post-id') },
+                            success: (responce) => {
+                                $(e.target.nextElementSibling).html(responce);
+                            },
+                            failure: (responce) => {
+
+                            }
+                        });
+                        $(e.target.nextElementSibling).css('visibility', 'visible');
+                    });
+                    $('.user-photo').mouseleave((e) => {
+                        $(e.target.nextElementSibling).css('visibility', 'hidden');
+                    });
+    $('.user-photo').click((e) => {
+                        $('#post-modal').css('display', 'flex');
+                    });
+
+                    $('.user-photo').click((e) => {
+                        $.ajax({
+                            type: "GET",
+                            url: "/Account/GetProperLikeIcon",
+                            data: { postId: $(e.target).attr('data-post-id') },
+                            success: (responce) => {
+                                $('#like-picture-placeholder').html(responce);
+                            },
+                            failure: (responce) => {
+
+                            }
+                        });
+                    });
+    $('.user-photo').click((e) => {
+                        $('#post-caption-part').attr('data-post-id', $(e.target).attr('data-post-id'));
+    });
+    $('.user-photo').one('click', (e) => {
+                        $('#number-of-likes-part p').text(`Liked by ${$(e.target).attr('data-number-likes')} users`);
+                    });
+                    $('.user-photo').click((e) => {
+                        $('#photo-part').append(`<img style="width:100%;height:100%;" src="${$(e.target).attr('src')}"/>`);
+                        $.ajax({
+                            type: "GET",
+                            url: "/Account/GetAuthorGeneralInfo",
+                            data: { id: $(e.target).attr('data-author-id') },
+                            success: (responce) => {
+                                console.log('worked');
+                                $('#comments-top-part').html(responce);
+                            },
+                            failure: (responce) => {
+
+                            }
+                        });
+                        $.ajax({
+                            type: "GET",
+                            url: "/Account/GetAllCaptions",
+                            data: { postId: $(e.target).attr('data-post-id') },
+                            success: (responce) => {
+                                console.log('blah');
+                                $('#comments-central-part').html(responce);
+                            },
+                            failure: (responce) => {
+
+                            }
+                        });
+                    });
+</script>

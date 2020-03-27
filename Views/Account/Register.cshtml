@@ -1,25 +1,91 @@
 ﻿@model RegisterViewModel
 
-<h2>New user registration</h2>
+@{
+    Layout = null;
+}
 
-<form method="post" asp-controller="Account" asp-action="Register">
-    <div asp-validation-summary="ModelOnly"></div>
-    <div>
-        <label asp-for="Email"></label><br />
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/Register.css">
+</head>
+<body>
+    <div id="register-form">
+        <div id="register-part">
+            <div>
+                <img src="~/Pics/insta.png" />
+            </div>
+            <div id="form-part">
+                <form method="post" asp-controller="Account" asp-action="Register" autocomplete="off">
+                    <div>
+                        <input asp-for="Email" id="email-field" placeholder="Email Address" class="fields-to-check" />
+                        <span asp-validation-for="Email" class="validation-reponse">
+                        </span>
+                    </div>
+                    <div>
+                        <input asp-for="Full_Name" placeholder="Your Full Name" />
+                        <span asp-validation-for="Full_Name"></span>
+                    </div>
+                    <div>
+                        <input asp-for="User_Name" placeholder="Your Username" class="fields-to-check" />
+                        <span asp-validation-for="User_Name" class="validation-reponse">
+                        </span>
+                    </div>
+                    <div id="password-part">
+                        <input asp-for="Password" id="password-field" placeholder="Password" />
+                        <input type="button" id="show-hide-password-button" value="Show" />
+                        <span asp-validation-for="Password" style="display:block;"></span>
+
+                    </div>
+
+                    <div>
+
+                        <input type="submit" id="submit-button" value="Registration" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="sign-in-part">
+            <p>Have an account? <a asp-action="SignIn" asp-controller="Account">Log In</a> </p>
+        </div>
     </div>
-    <div>
-        <label asp-for="Password"></label><br />
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-    <div>
-        <label asp-for="PasswordConfirm"></label><br />
-        <input asp-for="PasswordConfirm" />
-        <span asp-validation-for="PasswordConfirm"></span>
-    </div>
-    <div>
-        <input type="submit" value="Registration" />
-    </div>
-</form>
+</body>
+</html>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    $(function () {
+        $('#password-field').keyup((e) => {
+            if ($(e.target).val().length > 0) {
+                if ($('#show-hide-password-button').css('visibility') === 'visible') {
+                    return;
+                }
+                $('#show-hide-password-button').attr('value', 'Show');
+                $('#password-field').css('width', '81%');
+                $('#show-hide-password-button').css('visibility', 'visible');
+            }
+            else {
+                $('#password-field').css('width', '100%');
+                $('#show-hide-password-button').css('visibility', 'collapse');
+                $('#show-hide-password-button').attr('value', 'Show');
+                $('#password-field').attr('type', 'password');
+            }
+        });
+
+        $('#show-hide-password-button').click((e) => {
+            if ($(e.target).attr('value') === 'Show') {
+                $('#password-field').attr('type', 'text');
+                $('#show-hide-password-button').attr('value', 'Hide');
+            }
+            else if ($(e.target).attr('value') === 'Hide') {
+                $('#password-field').attr('type', 'password');
+                $('#show-hide-password-button').attr('value', 'Show');
+            }
+        });
+    });
+
+
+
+</script>

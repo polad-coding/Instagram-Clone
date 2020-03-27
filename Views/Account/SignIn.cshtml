@@ -1,23 +1,113 @@
 ﻿@model LogInViewModel
 
-    <h2>Enter the Account</h2>
-    <form method="post" asp-controller="Account" asp-action="SignIn">
-        <div asp-validation-summary="ModelOnly"></div>
-        <div>
-            <label asp-for="Email"></label><br />
-            <input asp-for="Email" />
-            <span asp-validation-for="Email"></span>
+@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/signIn.css">
+</head>
+<body>
+    <div id="sign-in-form">
+        <div id="sign-in-part">
+            <div>
+                <img src="~/Pics/insta.png" />
+
+            </div>
+            <div id="form-part">
+                <form method="post" asp-controller="Account" asp-action="SignIn" autocomplete="off">
+                    <div>
+                        <input asp-for="Email" placeholder="Email" id="email-field" />
+                    </div>
+                    <div id="password-part">
+                        <input asp-for="Password" placeholder="Password" id="password-field" />
+                        <input type="button" id="show-hide-password-button" value="Show" />
+
+                    </div>
+                    <div>
+                        <input type="submit" id="submit-button" disabled value="Log In" />
+                    </div>
+                </form>
+            </div>
+            <div asp-validation-summary="ModelOnly" id="form-errors"></div>
+
         </div>
-        <div>
-            <label asp-for="Password"></label><br />
-            <input asp-for="Password" />
-            <span asp-validation-for="Password"></span>
+        <div id="sign-up-redirection-part">
+            <p>Don't have an account? <a asp-action="Register" asp-controller="Account">Sign Up</a></p>
         </div>
-        <div>
-            <label asp-for="RememberMe"></label><br />
-            <input asp-for="RememberMe" />
-        </div>
-        <div>
-            <input type="submit" value="Войти" />
-        </div>
-    </form>
+    </div>
+
+</body>
+
+</html>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    $(function () {
+        $('#password-field').keyup((e) => {
+            if ($(e.target).val().length > 0) {
+                if ($('#show-hide-password-button').css('visibility') === 'visible') {
+                    return;
+                }
+                $('#show-hide-password-button').attr('value','Show');
+                $('#password-field').css('width', '81%');
+                $('#show-hide-password-button').css('visibility', 'visible');
+                if ($('#email-field').val().length > 0) {
+                    $('#submit-button').removeAttr('disabled');
+                    $('#submit-button').css('opacity','1');
+                    $('#submit-button').css('filter', '');
+                    $('#submit-button').css('cursor','pointer');
+                }
+            }
+            else {
+                $('#password-field').css('width', '100%');
+                $('#show-hide-password-button').css('visibility', 'collapse');
+                $('#show-hide-password-button').attr('value', 'Show');
+                $('#submit-button').attr('disabled');
+                $('#submit-button').css('opacity','0.4');
+                $('#submit-button').css('filter', 'alpha(opacity=40)');
+                $('#submit-button').css('cursor', '');
+                $('#password-field').attr('type', 'password');
+
+            }
+        });
+        $('#email-field').keyup((e) => {
+            if ($(e.target).val().length > 0) {
+                if ($('#password-field').val().length > 0) {
+                    $('#submit-button').removeAttr('disabled');
+                    $('#submit-button').css('opacity','1');
+                    $('#submit-button').css('filter', '');
+                    $('#submit-button').css('cursor','pointer');
+
+                }
+            }
+            else {
+                $('#submit-button').attr('disabled');
+                $('#submit-button').css('opacity','0.4');
+                $('#submit-button').css('filter', 'alpha(opacity=40)');
+                    $('#submit-button').css('cursor','');
+
+            }
+        });
+
+        $('#show-hide-password-button').click((e) => {
+            if ($(e.target).attr('value') === 'Show') {
+                $('#password-field').attr('type', 'text');
+                $('#show-hide-password-button').attr('value','Hide');
+
+            }
+            else if($(e.target).attr('value') === 'Hide') {
+                $('#password-field').attr('type', 'password');
+                $('#show-hide-password-button').attr('value','Show');
+
+
+            }
+        });
+    });
+
+
+
+</script>

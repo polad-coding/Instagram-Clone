@@ -1,0 +1,24 @@
+﻿@model List<CaptionViewModel>
+
+@foreach (var caption in Model)
+{
+    <div class="caption">
+        <a asp-action="UserAccount" asp-controller="Account" asp-route-id="@caption.Author_Id" style="cursor:pointer;">
+            @if (caption.Profile_Picture_URI != null)
+            {
+                <img style='grid-row-start:1;grid-row-end:2; width:40px; height:40px; border-radius:50%;' src="data:image/jpeg;base64,@(Convert.ToBase64String(caption.Profile_Picture_URI))" />
+            }
+            else
+            {
+                <img style='grid-row-start:1;grid-row-end:2; width:40px; height:40px; border-radius:50%;' src="~/Pics/standartPicture.jpg" />
+            }
+        </a>
+        <div style="margin-top:10px;">
+            <a style="text-decoration:none; margin-left:10px; margin-right:5px;" asp-action="UserAccount" asp-controller="Account" asp-route-id="@caption.Author_Id">
+                <span style="font-weight:bold;color:black;">@caption.Username</span>
+            </a>
+             <span>@caption.Caption_Text</span>
+        </div>
+
+    </div>
+}
