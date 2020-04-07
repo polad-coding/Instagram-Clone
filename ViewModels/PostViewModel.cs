@@ -17,5 +17,7 @@ namespace InstagramClone.ViewModels
 
         public byte[] Picture { get; set; }
 
+        public DateTime Creation_Time { get; set; }
+
     }
 }

@@ -24,6 +24,6 @@ namespace InstagramClone.ViewModels
 
         public string Web_Site_Link { get; set; }
 
-        public bool? Current_User_Following { get; set; } = false;
+        public bool Current_User_Following { get; set; } = false;
     }
 }

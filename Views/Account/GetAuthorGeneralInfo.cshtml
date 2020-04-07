@@ -13,7 +13,7 @@
     <span style="font-weight:bold;">@Model.Username</span>
 </a>
 
-@if (Model.Current_User_Following == false)
+@if (Model.Current_User_Following == false && Model.Id != User.FindFirstValue(ClaimTypes.NameIdentifier))
 {
     <a id="comment-modal-follow-button" class="comment-modal-follow-following-button" style="color:#3897F0;">
         Follow
@@ -22,7 +22,7 @@
         Following
     </a>
 }
-else if (Model.Current_User_Following == true)
+else if (Model.Current_User_Following == true && Model.Id != User.FindFirstValue(ClaimTypes.NameIdentifier))
 {
     <a id="comment-modal-unfollow-button" class="comment-modal-follow-following-button">
         Following

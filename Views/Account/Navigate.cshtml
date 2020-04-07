@@ -1,14 +1,89 @@
-﻿
+﻿@model List<PostViewModel>
 
+    <div id="container">
+        <div id="get-all-users">
+            <p>Discover All Users</p>
+            <a asp-action="GetAllUsers" asp-controller="Account">See All Users</a>
+        </div>
+        <div id="get-all-users-posts">
+            @foreach (var p in Model)
+            {
+                <a>
+                    @if (p.Picture != null)
+                    {
+                        <div style="position:relative;width:100%;padding-bottom:100%;" class="user-photo">
+                            <img style='position:absolute; width:100%; height:100%' src="data:image/jpeg;base64,@(Convert.ToBase64String(p.Picture))" data-post-id="@p.Id" data-author-id="@p.IUser_Id" data-number-likes="@p.Number_Of_Likes" />
+                            <div class="image-info">
 
-<div id="container">
-    <div id="get-all-users">
+                            </div>
+                        </div>
+                    }
+                </a>
+            }
+        </div>
+        <div id="post-modal">
+            <div id="post-modal-content">
+                <div id="photo-part">
 
+                </div>
+                <div id="comments-part">
+                    <div id="comments-top-part">
+
+                    </div>
+                    <div id="comments-central-part">
+
+                    </div>
+                    <div id="comments-bottom-part">
+                        <div id="post-actions-part">
+                            <div id="icons-part" style="display:flex;height:100%;width:100%; align-items:center;">
+                                <div id="like-picture-placeholder" style="margin-left:10px;margin-right:10px;">
+
+                                </div>
+                                <a id="add-comment-button">
+                                    <img src="~/Pics/icons8-comments-52.png" style="height:30px;width:30px;" />
+                                </a>
+                                <a id="bookmark-post-button" style="margin-left:auto;">
+
+                                </a>
+                            </div>
+                            <div id="number-of-likes-part" style="display:flex;height:100%;">
+                                <p></p>
+                            </div>
+                            <div id="date-part" style="display:flex;height:100%;">
+
+                            </div>
+                        </div>
+                        <div id="post-caption-part">
+                            <form id="caption-post-form" style="display:grid;grid-template-columns:80% 20%;height:100%;width:100%;" autocomplete="off">
+                                <input id="text-input" required style="border:none;margin:10px;" type="text" placeholder="Add new post..." />
+                                <input id="caption-submit-button" type="submit" style="border:none;background-color:#FFFFFF;color:#3897F0;font-weight:bold;opacity: 0.4;filter: alpha(opacity=40);" value="Post" />
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span id="post-modal-close">&times;</span>
+
+        </div>
+        <div id="add-post-modal">
+            <form id="add-post-modal-content" asp-action="AddPost" method="post" asp-controller="Account" enctype="multipart/form-data">
+
+                <label style="grid-column-start:1;grid-column-end:2;grid-row-start:1;grid-row-end:2;align-self:center;margin-left:auto;font-weight:bold;">Caption</label>
+                <textarea name="caption" form="add-post-modal-content" style="grid-column-start:2;grid-column-end:3;grid-row-start:1;grid-row-end:2;margin:20px;resize:none;border-radius:10px;border:1px solid #DBDBDB; padding:10px;" placeholder="Write your caption here..."> </textarea>
+
+                <label style="grid-row-start:2;grid-row-end:3;grid-column-start:1;grid-column-end:2;align-self:center;margin-left:auto;font-weight:bold;">File</label>
+                <label style="grid-row-start:2;grid-row-end:3;grid-column-start:2;grid-column-end:3;align-self:center;display:flex;align-items:center; margin-left:20px; cursor:pointer;">
+                    <input type="file" style="display:none;" class="file-upload" name="img" />
+                    <span style="margin-right:20px;border-radius:5px;border:1px solid #3897F0; background-color:#3897F0; color:white;padding:10px;">Upload Image</span>
+
+                    <img id="file-selected" style="width:50px;height:50px;display:none;" />
+                </label>
+                <input type="submit" value="Add Post" style="cursor:pointer; grid-row-start:3;grid-row-end:4;grid-column-start:1;grid-column-end:3;margin:20px;border-radius:5px;border:1px solid #3897F0; background-color:#3897F0; color:white;" />
+            </form>
+            <span id="add-post-modal-close">&times;</span>
+        </div>
     </div>
-    <div id="get-all-users-posts">
-
-    </div>
-</div>
 
 
 

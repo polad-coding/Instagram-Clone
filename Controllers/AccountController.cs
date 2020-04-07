@@ -321,12 +321,11 @@ namespace InstagramClone.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignIn(LogInViewModel model)
         {
-            
 
             if (ModelState.IsValid)
             {
-                var result =
-                    await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("UserAccount", "Account");
@@ -423,7 +422,7 @@ namespace InstagramClone.Controllers
 
                     var p = new DynamicParameters();
                     p.Add("@Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    p.Add("@UserName", model.UserName);
+                    p.Add("@UserName", model.User_Name);
                     p.Add("@FullName", model.FullName);
                     char? toPass = model.Gender == null ? (char?)null : (model.Gender == "Men" ? 'm' : 'f');
                     p.Add("@Gender", toPass);
@@ -447,12 +446,14 @@ namespace InstagramClone.Controllers
                 var p = new DynamicParameters();
                 p.Add("@Email", Email);
 
-                int result = connection.QueryFirst<int>("dbo.IsMailUnique", p, commandType: CommandType.StoredProcedure);
 
-                if (Convert.ToBoolean(result))
+                string matchId = connection.QueryFirst<string>("dbo.IsMailUnique", p, commandType: CommandType.StoredProcedure);
+
+                if (matchId != null && matchId != User.FindFirstValue(ClaimTypes.NameIdentifier))
                 {
                     return Json(false);
                 }
+
             }
 
 
@@ -478,7 +479,7 @@ namespace InstagramClone.Controllers
 
                     var p = new DynamicParameters();
                     p.Add("@Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    p.Add("@UserName", model.UserName);
+                    p.Add("@UserName", model.User_Name);
                     p.Add("@FullName", model.FullName);
                     char? toPass = model.Gender == null ? (char?)null : (model.Gender == "Men" ? 'm' : 'f');
                     p.Add("@Gender", toPass);
@@ -502,9 +503,9 @@ namespace InstagramClone.Controllers
                 var p = new DynamicParameters();
                 p.Add("@UserName", User_Name);
 
-                int result = connection.QueryFirst<int>("dbo.IsUserNameUnique", p, commandType: CommandType.StoredProcedure);
+                string matchId = connection.QueryFirst<string>("dbo.IsUserNameUnique", p, commandType: CommandType.StoredProcedure);
 
-                if (Convert.ToBoolean(result))
+                if (matchId != null && matchId != User.FindFirstValue(ClaimTypes.NameIdentifier))
                 {
                     return Json(false);
                 }
@@ -563,7 +564,19 @@ namespace InstagramClone.Controllers
 
         public IActionResult Navigate()
         {
-            return View();
+            List<PostViewModel> posts;
+            //Get all Posts with information about users
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            {
+                var p = new DynamicParameters();
+
+                posts = connection.Query<PostViewModel>("dbo.GetAllPosts", p, commandType: CommandType.StoredProcedure).ToList();
+            }
+            //Sort them by datetime
+            //Pass the resukt to the model
+
+
+            return View(posts);
         }
 
         public IActionResult GetAllFollowerUsers(string id)
@@ -669,7 +682,7 @@ namespace InstagramClone.Controllers
                 }
                 else
                 {
-                    user.Current_User_Following = null;
+                    user.Current_User_Following = false;
                 }
             }
 
@@ -743,9 +756,27 @@ namespace InstagramClone.Controllers
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
-                users = connection.Query<UserViewModel>("select * from dbo.InstagramUser").ToList();
+                string query = $"select * from dbo.InstagramUser where Id != '{User.FindFirstValue(ClaimTypes.NameIdentifier)}'";
+                users = connection.Query<UserViewModel>(query).ToList();
             }
 
+            var p = new DynamicParameters();
+
+            foreach (var user in users)
+            {
+                using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                {
+                    p.Add("@Curr_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    p.Add("@User_Id", user.Id);
+                    p.Add("@Responce", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                    connection.Execute("dbo.IsUserFollowing", p, commandType: CommandType.StoredProcedure);
+
+                    bool isFollowing = Convert.ToBoolean(p.Get<int>("@Responce"));
+
+                    user.Current_User_Following = isFollowing;
+                }
+            }
 
             return View(users);
         }

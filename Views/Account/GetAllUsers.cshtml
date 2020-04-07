@@ -1,8 +1,94 @@
 ﻿@model List<UserViewModel>
 
-    <div>
-        @foreach (var item in Model)
-        {
-            <a href="@Url.Action("UserAccount", "Account", new { id = item.Id}) ">@item.Username</a><br />
-        }
-    </div>
+<div id="users-list">
+    @foreach (var user in Model)
+    {
+        <div class="person">
+            <a href="@Url.Action("UserAccount", "Account", new { id = user.Id})">
+                @if (user.Profile_Picture_URI != null)
+                {
+                    <img src="data:image/jpeg;base64,@(Convert.ToBase64String(user.Profile_Picture_URI))" />
+                }
+                else
+                {
+                    <img src="~/Pics/standartPicture.jpg" />
+                }
+            </a>
+            <div class="person-identity">
+                <a href="@Url.Action("UserAccount", "Account", new { id = user.Id})">@user.Username</a>
+                <p>@user.Full_Name</p>
+            </div>
+            <div class="follow-unfollow-user-button-placeholder" data-userId="@user.Id">
+                @if (!user.Current_User_Following)
+                {
+                    <a class="FollowButton">
+                        Follow
+                    </a>
+                    <a class="UnfollowButton" style="display:none;">
+                        Unfollow
+                    </a>
+                }
+                else
+                {
+                    <a class="FollowButton" style="display:none;">
+                        Follow
+                    </a>
+                    <a class="UnfollowButton">
+                        Unfollow
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    $(function () {
+        $('.FollowButton').click((e) => {
+            $(e.target).css('display', 'none');
+            $(e.target).siblings('a').css('display', 'inline');
+             console.log('1');
+        });
+
+        $('.FollowButton').click((e) => {
+            $.ajax({
+                type: "GET",
+                url: "/Account/FollowUser",
+                data: { id: $(e.target).parent().attr('data-userId') },
+                success: (responce) => {
+             console.log('2');
+
+                },
+                failure: (responce) => {
+
+                }
+            });
+        });
+
+        $('.UnfollowButton').click((e) => {
+            $.ajax({
+                type: "GET",
+                url: "/Account/UnfollowUser",
+                data: { id: $(e.target).parent().attr('data-userId') },
+                success: (responce) => {
+             console.log('4');
+
+                },
+                failure: (responce) => {
+
+                }
+            });
+        });
+
+        $('.UnfollowButton').click((e) => {
+            $(e.target).css('display', 'none');
+            $(e.target).siblings('a').css('display', 'inline');
+             console.log('3');
+
+        });
+    });
+
+</script>

@@ -14,8 +14,8 @@ namespace InstagramClone.ViewModels
 
         [DataType(DataType.Text)]
         [Required(ErrorMessage = "Cannot be empty!")]
-        [Remote("IsUserNameExists","Account")]
-        public string UserName { get; set; }
+        [Remote("IsUserNameExists","Account",ErrorMessage = "This username already exists.")]
+        public string User_Name { get; set; }
 
         [DataType(DataType.Text)]
         public string FullName { get; set; }
@@ -24,7 +24,7 @@ namespace InstagramClone.ViewModels
         public string Gender { get; set; }
 
         [DataType(DataType.EmailAddress)]
-        [Remote(action: "IsEmailExists", controller: "Account")]
+        [Remote(action: "IsEmailExists", controller: "Account", ErrorMessage = "This Email already exists.")]
         [Required(ErrorMessage = "Cannot be empty!")]
 
         public string Email { get; set; }
