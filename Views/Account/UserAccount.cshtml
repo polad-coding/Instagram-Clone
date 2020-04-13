@@ -1,4 +1,5 @@
 ﻿@model ChangeProfileViewModel
+
 <div class="main-content">
 
     <div id="user-account-container">
@@ -22,17 +23,14 @@
                         <p style="display:inline;font-size:20px;margin-right:5px;">@ViewBag.CurrUser.Username</p>
                         @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == ViewBag.CurrUser.Id)
                         {
-                            <button id="edit-profile-button" style="margin-right:5px;font-weight:bold;">Edit Profile</button>
+                            <a class="profile-upperpart-button" id="edit-profile-button" style="margin-right:5px;font-weight:bold;">Edit Profile</a>
+                            <a class="profile-upperpart-button" asp-action="LogOut" asp-controller="Account">Logout</a>
                         }
                         else
                         {
                             <div id="follow-unfollow-user-button-placeholder">
 
                             </div>
-                            @*//TODO - change here
-                                <a id="FollowButton" href="@Url.Action("FollowUser", "Account", new { id = ViewBag.CurrUser.Id}) ">Follow</a>
-
-                                <a id="UnfollowButton" href="@Url.Action("UnfollowUser", "Account", new { id = ViewBag.CurrUser.Id})">Unfollow</a>*@
                         }
 
 
@@ -171,7 +169,7 @@
 
             <div id="edit-profile-modal">
                 <div id="form-container" style="">
-                    <form id="edit-profile-modal-content" asp-action="EditProfile" method="post" asp-controller="Account" enctype="multipart/form-data">
+                    <form id="edit-profile-modal-content" asp-action="ChangeProfile" method="post" asp-controller="Account" enctype="multipart/form-data">
                         <div class="validation" asp-validation-summary="ModelOnly"></div>
                         <div style="display:flex; grid-column-start:1;grid-column-end:2;grid-row-start:1;grid-row-end:2;margin-right:30px;">
                             @if (ViewBag.CurrUser.Profile_Picture_URI != null)
@@ -265,7 +263,7 @@
 
                         let content = $('#add-post-modal-content').children('textarea').val();
 
-                        if (content.length > 0 && /\S/.test(content) && validFileType(document.getElementById('form-file-selected').files[0])) {
+                        if (content.length > 0 && /\S/.test(content) && document.getElementById('form-file-selected').files.length > 0 && validFileType(document.getElementById('form-file-selected').files[0])) {
                             $('#add-post-modal-content').submit();
                             console.log('worked!');
                         }

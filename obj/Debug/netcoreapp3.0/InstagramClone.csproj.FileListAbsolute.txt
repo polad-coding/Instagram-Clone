@@ -153,13 +153,8 @@ C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\InstagramClon
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\InstagramClone.TagHelpers.input.cache
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\InstagramClone.TagHelpers.output.cache
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\InstagramClone.RazorCoreGenerate.cache
-C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\AddPost.cshtml.g.cs
-C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\ChangeProfile.cshtml.g.cs
-C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\FollowUser.cshtml.g.cs
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetAllBookmarks.cshtml.g.cs
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetAllCaptions.cshtml.g.cs
-C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetAllFollowerUsers.cshtml.g.cs
-C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetAllFollowingUsers.cshtml.g.cs
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetAllPosts.cshtml.g.cs
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetAllUsers.cshtml.g.cs
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\GetAuthorGeneralInfo.cshtml.g.cs
@@ -172,7 +167,6 @@ C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\A
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\Navigate.cshtml.g.cs
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\Register.cshtml.g.cs
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\SignIn.cshtml.g.cs
-C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\UnfollowUser.cshtml.g.cs
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Account\UserAccount.cshtml.g.cs
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Shared\Error.cshtml.g.cs
 C:\Users\Polad\source\repos\InstagramClone\obj\Debug\netcoreapp3.0\Razor\Views\Shared\_Layout.cshtml.g.cs

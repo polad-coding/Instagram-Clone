@@ -23,6 +23,7 @@ namespace InstagramClone.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
         private List<PostViewModel> posts;
+        private string connectionString { get; set; }
 
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
         {
@@ -30,8 +31,14 @@ namespace InstagramClone.Controllers
             _signInManager = signInManager;
             _configuration = configuration;
             posts = new List<PostViewModel>();
+            connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
+        /// <summary>
+        /// Log the user out and redirect to sign in page.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
@@ -39,6 +46,10 @@ namespace InstagramClone.Controllers
             return RedirectToAction("SignIn");
         }
 
+        /// <summary>
+        /// Get the SignIn page view.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult SignIn()
         {
@@ -50,30 +61,23 @@ namespace InstagramClone.Controllers
             return View();
         }
 
-        [HttpGet]
+        /// <summary>
+        /// Get all follwings.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult GetFollowings(string id)
         {
-            List<UserViewModel> followings = new List<UserViewModel>();
+            List<UserViewModel> followings;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                var p = new DynamicParameters();
-                p.Add("@User_Id", id);
 
-                followings = connection.Query<UserViewModel>("dbo.GetAllFollowingUsers", p, commandType: CommandType.StoredProcedure).ToList();
+                followings = AccountControllerHelperMethods.GetAllFollowings(connection, id);
 
                 for (int i = 0; i < followings.Count; i++)
                 {
-                    p = new DynamicParameters();
-                    p.Add("@Curr_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    p.Add("@User_Id", followings[i].Id);
-                    p.Add("@Responce", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-                    connection.Execute("dbo.IsUserFollowing", p, commandType: CommandType.StoredProcedure);
-
-                    bool isFollowing = Convert.ToBoolean(p.Get<int>("@Responce"));
-
-                    followings[i].Current_User_Following = isFollowing;
+                    followings[i].Current_User_Following = true;
                 }
 
             }
@@ -84,15 +88,18 @@ namespace InstagramClone.Controllers
             return PartialView(followings);
         }
 
-
+        /// <summary>
+        /// Check if post is liked and display respective button.
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IActionResult GetProperLikeIcon(int postId)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Post_Id", postId);
                 p.Add("@User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-
 
                 bool isLiked = Convert.ToBoolean(connection.QueryFirst<int>("dbo.IsLikedByUser", p, commandType: CommandType.StoredProcedure));
 
@@ -103,17 +110,21 @@ namespace InstagramClone.Controllers
             return PartialView();
         }
 
+        /// <summary>
+        /// Unlike the post.
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IActionResult UnlikePhoto(int postId)
         {
             int numberOfLikes;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Post_Id", postId);
                 p.Add("@User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
                 p.Add("@Number_Of_Likes", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
-
 
                 connection.Execute("dbo.UnlikePhoto", p, commandType: CommandType.StoredProcedure);
 
@@ -124,11 +135,16 @@ namespace InstagramClone.Controllers
             return Content($"Liked by {numberOfLikes} users", "text/html");
         }
 
+        /// <summary>
+        /// Like the post.
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IActionResult LikePhoto(int postId)
         {
             int numberOfLikes;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Post_Id", postId);
@@ -144,9 +160,14 @@ namespace InstagramClone.Controllers
             return Content($"Liked by {numberOfLikes} users", "text/html");
         }
 
+        /// <summary>
+        /// Check if post is bookmarked and get the proper icon.
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IActionResult GetProperBookmarksIcon(int postId)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Post_Id", postId);
@@ -161,9 +182,14 @@ namespace InstagramClone.Controllers
             return PartialView();
         }
 
+        /// <summary>
+        /// Bookmark the given post.
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IActionResult BookmarkPost(int postId)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Post_Id", postId);
@@ -173,13 +199,17 @@ namespace InstagramClone.Controllers
 
             }
 
-
             return new EmptyResult();
         }
 
+        /// <summary>
+        /// Unbookmark the given post.
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IActionResult UnbookmarkPost(int postId)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Post_Id", postId);
@@ -192,9 +222,14 @@ namespace InstagramClone.Controllers
             return new EmptyResult();
         }
 
+        /// <summary>
+        /// For each user get proper button.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public IActionResult GetFollowUnfollowButton(string userId)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -210,11 +245,15 @@ namespace InstagramClone.Controllers
             return PartialView();
         }
 
+        /// <summary>
+        /// Get all bookmarks for current user.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult GetAllBookmarks()
         {
             List<PostViewModel> posts;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -227,11 +266,16 @@ namespace InstagramClone.Controllers
             return PartialView(posts);
         }
 
+        /// <summary>
+        /// Get all posts for current user.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public IActionResult GetAllPosts(string userId)
         {
             List<PostViewModel> posts;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Id", userId);
@@ -240,18 +284,20 @@ namespace InstagramClone.Controllers
 
             }
 
-
             return PartialView(posts);
         }
 
+        /// <summary>
+        /// Get number of likes and number of captions for current post.
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IActionResult GetPostStats(int postId)
         {
-            
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Post_Id",postId);
-
+                p.Add("@Post_Id", postId);
 
                 var responce = connection.QueryFirst<PostStatsModel>("dbo.GetPostStats", p, commandType: CommandType.StoredProcedure);
 
@@ -259,16 +305,19 @@ namespace InstagramClone.Controllers
                 ViewBag.Number_Of_Captions = responce.Number_Of_Captions == null ? 0 : responce.Number_Of_Captions;
             }
 
-
-
-
             return PartialView();
         }
 
+        /// <summary>
+        /// Add new caption.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult AddComment(string text, int postId)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Author_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -282,28 +331,24 @@ namespace InstagramClone.Controllers
             return RedirectToAction("GetAllCaptions", new { postId = postId });
         }
 
+        /// <summary>
+        /// Get all followers for given user and check if current user if following them (to display the proper button).
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetFollowers(string id)
         {
             List<UserViewModel> followers = new List<UserViewModel>();
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                var p = new DynamicParameters();
-                p.Add("@User_Id", id);
 
-                followers = connection.Query<UserViewModel>("dbo.GetAllFollowerUsers", p, commandType: CommandType.StoredProcedure).ToList();
+                followers = AccountControllerHelperMethods.GetAllFollowers(connection, id);
 
                 for (int i = 0; i < followers.Count; i++)
                 {
-                    p = new DynamicParameters();
-                    p.Add("@Curr_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    p.Add("@User_Id", followers[i].Id);
-                    p.Add("@Responce", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-                    connection.Execute("dbo.IsUserFollowing", p, commandType: CommandType.StoredProcedure);
-
-                    bool isFollowing = Convert.ToBoolean(p.Get<int>("@Responce"));
+                    bool isFollowing = AccountControllerHelperMethods.IsCurrentUserFollowing(connection, User.FindFirstValue(ClaimTypes.NameIdentifier), followers[i].Id);
 
                     followers[i].Current_User_Following = isFollowing;
                 }
@@ -313,19 +358,24 @@ namespace InstagramClone.Controllers
             ViewBag.CurrUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewBag.UserProfileId = id;
 
-
             return PartialView(followers);
         }
 
+
+        /// <summary>
+        /// Sign in the user.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignIn(LogInViewModel model)
         {
-
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+
                 if (result.Succeeded)
                 {
                     return RedirectToAction("UserAccount", "Account");
@@ -338,79 +388,62 @@ namespace InstagramClone.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        public IActionResult AddPost()
-        {
-            return View();
-        }
-
         [HttpPost]
         public IActionResult AddPost(string caption, IFormFile img)
         {
+            byte[] imageData = null;
 
-            if (img != null)
+            using (var binaryReader = new BinaryReader(img.OpenReadStream()))
             {
-                byte[] imageData = null;
+                imageData = binaryReader.ReadBytes((int)img.Length);
+            }
 
-                using (var binaryReader = new BinaryReader(img.OpenReadStream()))
-                {
-                    imageData = binaryReader.ReadBytes((int)img.Length);
-                }
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                int postId = AccountControllerHelperMethods.AddPost(connection, User.FindFirstValue(ClaimTypes.NameIdentifier), imageData, caption);
 
-                using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-                {
-
-                    var p = new DynamicParameters();
-                    p.Add("@User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    p.Add("@User_Caption", caption);
-                    p.Add("@Picture", imageData);
-                    p.Add("@Id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-                    connection.Execute("dbo.AddPost", p, commandType: CommandType.StoredProcedure);
-
-                    int id = p.Get<int>("@Id");
-
-                    posts.Add(new PostViewModel() { Id = id, IUser_Id = User.FindFirstValue(ClaimTypes.NameIdentifier), Picture = imageData});
-                }
-
+                posts.Add(new PostViewModel() { Id = postId, IUser_Id = User.FindFirstValue(ClaimTypes.NameIdentifier), Picture = imageData });
             }
 
             return RedirectToAction("UserAccount", "Account", new { id = "null" });
         }
 
+        /// <summary>
+        /// Get all captions for given post and sort them by date and time.
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IActionResult GetAllCaptions(string postId)
         {
             List<CaptionViewModel> captions;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-
                 var p = new DynamicParameters();
                 p.Add("@Post_Id", postId);
 
                 captions = connection.Query<CaptionViewModel>("dbo.GetAllPostCaptions", p, commandType: CommandType.StoredProcedure).ToList();
-                
             }
 
-            captions = captions.OrderBy((m) => m.Creation_Time ).ToList();
+            captions = captions.OrderBy((m) => m.Creation_Time).ToList();
 
             return PartialView(captions);
         }
 
-        [HttpGet]
-        public IActionResult ChangeProfile()
-        {
-            return View();
-        }
-
+        /// <summary>
+        /// Change profile with the given data.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult ChangeProfile(ChangeProfileViewModel model)
         {
             if (ModelState.IsValid)
             {
-                using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
                 {
                     byte[] imageData = null;
+
                     if (model.ProfilePicture != null)
                     {
                         using (var binaryReader = new BinaryReader(model.ProfilePicture.OpenReadStream()))
@@ -419,33 +452,24 @@ namespace InstagramClone.Controllers
                         }
                     }
 
-
-                    var p = new DynamicParameters();
-                    p.Add("@Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    p.Add("@UserName", model.User_Name);
-                    p.Add("@FullName", model.FullName);
-                    char? toPass = model.Gender == null ? (char?)null : (model.Gender == "Men" ? 'm' : 'f');
-                    p.Add("@Gender", toPass);
-                    p.Add("@Email", model.Email);
-                    p.Add("@Bio", model.Bio);
-                    p.Add("@WebSiteLink", model.WebSiteLink);
-                    p.Add("@ProfilePicture", imageData, DbType.Binary);
-
-                    connection.Execute("dbo.UpdateUserProfile", p, commandType: CommandType.StoredProcedure);
+                    AccountControllerHelperMethods.ChangeProfile(connection, model, User.FindFirstValue(ClaimTypes.NameIdentifier), imageData);
 
                 }
             }
             return View();
         }
 
-        [AcceptVerbs("GET", "POST")]
+        /// <summary>
+        /// During the registration and change profile procedure check if the given email address is correct.
+        /// </summary>
+        /// <param name="Email"></param>
+        /// <returns></returns>
         public JsonResult IsEmailExists(string Email)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Email", Email);
-
 
                 string matchId = connection.QueryFirst<string>("dbo.IsMailUnique", p, commandType: CommandType.StoredProcedure);
 
@@ -456,49 +480,17 @@ namespace InstagramClone.Controllers
 
             }
 
-
             return Json(true);
         }
 
-        [HttpPost]
-        public IActionResult EditProfile(ChangeProfileViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-                {
-                    byte[] imageData = null;
-                    if (model.ProfilePicture != null)
-                    {
-                        using (var binaryReader = new BinaryReader(model.ProfilePicture.OpenReadStream()))
-                        {
-                            imageData = binaryReader.ReadBytes((int)model.ProfilePicture.Length);
-                        }
-                    }
-
-
-                    var p = new DynamicParameters();
-                    p.Add("@Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    p.Add("@UserName", model.User_Name);
-                    p.Add("@FullName", model.FullName);
-                    char? toPass = model.Gender == null ? (char?)null : (model.Gender == "Men" ? 'm' : 'f');
-                    p.Add("@Gender", toPass);
-                    p.Add("@Email", model.Email);
-                    p.Add("@Bio", model.Bio);
-                    p.Add("@WebSiteLink", model.WebSiteLink);
-                    p.Add("@ProfilePicture", imageData, DbType.Binary);
-
-                    connection.Execute("dbo.UpdateUserProfile", p, commandType: CommandType.StoredProcedure);
-
-                }
-            }
-
-            return RedirectToAction("UserAccount", "Account", new { id = User.FindFirstValue(ClaimTypes.NameIdentifier) });
-        }
-
+        /// <summary>
+        /// During the change profile procedure check if the given user name is correct.
+        /// </summary>
+        /// <param name="User_Name"></param>
+        /// <returns></returns>
         public JsonResult IsUserNameExists(string User_Name)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@UserName", User_Name);
@@ -514,9 +506,14 @@ namespace InstagramClone.Controllers
             return Json(true);
         }
 
-        public PartialViewResult FollowUser(string id)
+        /// <summary>
+        /// Follow the given user.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IActionResult FollowUser(string id)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -525,13 +522,17 @@ namespace InstagramClone.Controllers
                 connection.Execute("dbo.FollowUser", p, commandType: CommandType.StoredProcedure);
             }
 
-
-            return PartialView();
+            return new EmptyResult();
         }
 
-        public PartialViewResult UnfollowUser(string id)
+        /// <summary>
+        /// Unfollow the given user.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IActionResult UnfollowUser(string id)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("@Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -540,116 +541,58 @@ namespace InstagramClone.Controllers
                 connection.Execute("dbo.UnfollowUser", p, commandType: CommandType.StoredProcedure);
             }
 
-            return PartialView();
+            return new EmptyResult();
 
         }
 
-
-        public IActionResult GetAllFollowingUsers(string id)
-        {
-            IEnumerable<UserViewModel> followingUsers;
-
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
-                var p = new DynamicParameters();
-
-                p.Add("@User_Id", id);
-
-                followingUsers = connection.Query<UserViewModel>("dbo.GetAllFollowingUsers", p, commandType: CommandType.StoredProcedure);
-
-            }
-
-            return View(followingUsers);
-        }
-
+        /// <summary>
+        /// Get posts of all users.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Navigate()
         {
             List<PostViewModel> posts;
-            //Get all Posts with information about users
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
 
                 posts = connection.Query<PostViewModel>("dbo.GetAllPosts", p, commandType: CommandType.StoredProcedure).ToList();
             }
-            //Sort them by datetime
-            //Pass the resukt to the model
-
 
             return View(posts);
         }
 
-        public IActionResult GetAllFollowerUsers(string id)
-        {
-            IEnumerable<UserViewModel> followerUsers;
-
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
-                var p = new DynamicParameters();
-
-                p.Add("@User_Id", id);
-
-                followerUsers = connection.Query<UserViewModel>("dbo.GetAllFollowerUsers", p, commandType: CommandType.StoredProcedure);
-
-            }
-
-            return View(followerUsers);
-        }
-
+        /// <summary>
+        /// Return the user account.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         public IActionResult UserAccount(string Id)
         {
-
             if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("SignIn", "Account");
             }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                var p = new DynamicParameters();
-                UserViewModel currUser;
-
                 if (Id == "null" || Id == null)
                 {
-                    p.Add("@Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    currUser = connection.QueryFirstOrDefault<UserViewModel>("dbo.IsUserExists", p, commandType: CommandType.StoredProcedure);
+                    Id = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 }
-                else
-                {
-                    p.Add("@Id", Id);
-                    currUser = connection.QueryFirstOrDefault<UserViewModel>("dbo.IsUserExists", p, commandType: CommandType.StoredProcedure);
-                }
+
+                UserViewModel currUser = AccountControllerHelperMethods.GetUser(Id, connection);
+                UserStatsModel userStats = AccountControllerHelperMethods.GetUserStats(Id, connection);
 
                 if (currUser == null)
                 {
                     return RedirectToAction("Error", "Home");
                 }
 
-                p = new DynamicParameters();
-
-                p.Add("@Id", currUser.Id);
-                posts = connection.Query<PostViewModel>("dbo.GetPostsByUserId", p, commandType: CommandType.StoredProcedure).ToList();
-
-                p = new DynamicParameters();
-                p.Add("@Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                p.Add("@Following_Id", Id);
-
-                int following = connection.QueryFirst<int>("dbo.CheckIfUserFollowing", p, commandType: CommandType.StoredProcedure);
-
-                p = new DynamicParameters();
-                if (Id == null || Id == "null")
-                {
-                    p.Add("@User_id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                }
-                else
-                {
-                    p.Add("@User_id", Id);
-                }
-
-                UserStatsModel userStats = connection.QueryFirst<UserStatsModel>("dbo.FindNumberOfFollowingsAndFollowers", p, commandType: CommandType.StoredProcedure);
+                posts = AccountControllerHelperMethods.GetAllUserPosts(Id, connection);
 
                 ViewBag.CurrUser = currUser;
-                ViewBag.Following = following;
                 ViewBag.UserStats = userStats;
                 ViewBag.Posts = posts;
             }
@@ -657,26 +600,24 @@ namespace InstagramClone.Controllers
             return View(new ChangeProfileViewModel());
         }
 
+        /// <summary>
+        /// Check if current user if following the author of the given post and pass this info into the view.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IActionResult GetAuthorGeneralInfo(string id, int postId)
         {
             UserViewModel user;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                var p = new DynamicParameters();
 
-                p.Add("@User_Id", id);
-
-                user = connection.QueryFirst<UserViewModel>("dbo.GetUserById", p, commandType: CommandType.StoredProcedure);
+                user = AccountControllerHelperMethods.GetUser(id, connection);
 
                 if (User.FindFirstValue(ClaimTypes.NameIdentifier) != id)
                 {
-                    p = new DynamicParameters();
-
-                    p.Add("@Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    p.Add("@Following_Id", id);
-
-                    bool following = Convert.ToBoolean(connection.QueryFirst<int>("dbo.CheckIfUserFollowing", p, commandType: CommandType.StoredProcedure));
+                    bool following = AccountControllerHelperMethods.IsCurrentUserFollowing(connection, User.FindFirstValue(ClaimTypes.NameIdentifier), id);
 
                     user.Current_User_Following = following;
                 }
@@ -691,50 +632,55 @@ namespace InstagramClone.Controllers
             return PartialView(user);
         }
 
+        /// <summary>
+        /// Delete user's post.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         public IActionResult DeletePost(string userId, int postId)
         {
-
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
 
                 p.Add("@Post_Id", postId);
 
                 connection.Execute("dbo.DeletePost", p, commandType: CommandType.StoredProcedure);
-
             }
-
 
             return RedirectToAction("UserAccount", "Account", new { id = userId });
         }
 
-        [HttpGet]
+        /// <summary>
+        /// Return Register page view.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Register()
         {
             return View();
         }
 
+        /// <summary>
+        /// Create new user and sign him in.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                //TODO - Add check of unique userName
                 User user = new User { Email = model.Email, UserName = model.User_Name };
                 var result = await _userManager.CreateAsync(user, model.Password);
+
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, false);
 
-                    using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                    using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
                     {
-                        var p = new DynamicParameters();
-                        p.Add("@Id", user.Id);
-                        p.Add("@UserName", model.User_Name);
-                        p.Add("@Email", model.Email);
-                        p.Add("@FullName", model.Full_Name);
-
-                        connection.Execute("dbo.CreateInstagramUser", p, commandType: CommandType.StoredProcedure);
+                        AccountControllerHelperMethods.CreateInstagramUser(connection, user.Id, model);
                     }
 
                     return RedirectToAction("UserAccount", "Account");
@@ -750,30 +696,22 @@ namespace InstagramClone.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Get all users.
+        /// </summary>
+        /// <returns></returns>
         public IActionResult GetAllUsers()
         {
+
             List<UserViewModel> users;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                string query = $"select * from dbo.InstagramUser where Id != '{User.FindFirstValue(ClaimTypes.NameIdentifier)}'";
-                users = connection.Query<UserViewModel>(query).ToList();
-            }
+                users = AccountControllerHelperMethods.GetAllUsers(User.FindFirstValue(ClaimTypes.NameIdentifier), connection);
 
-            var p = new DynamicParameters();
-
-            foreach (var user in users)
-            {
-                using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                foreach (var user in users)
                 {
-                    p.Add("@Curr_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                    p.Add("@User_Id", user.Id);
-                    p.Add("@Responce", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-                    connection.Execute("dbo.IsUserFollowing", p, commandType: CommandType.StoredProcedure);
-
-                    bool isFollowing = Convert.ToBoolean(p.Get<int>("@Responce"));
-
+                    bool isFollowing = AccountControllerHelperMethods.IsCurrentUserFollowing(connection, User.FindFirstValue(ClaimTypes.NameIdentifier), user.Id);
                     user.Current_User_Following = isFollowing;
                 }
             }

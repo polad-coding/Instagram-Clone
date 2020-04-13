@@ -117,12 +117,15 @@ main{
     grid-template-rows: 25% 25% 50%;
 }
 
-#edit-profile-button {
+.profile-upperpart-button {
     border: 1px solid #dbdbdb;
     border-radius: 2px;
     padding: 5px;
     background-color: #FAFAFA;
     cursor: pointer;
+    font-weight: bold;
+    text-decoration:none;
+    color:black;
 }
 
 #user-information-part {

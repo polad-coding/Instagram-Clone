@@ -16,7 +16,7 @@
         </a>
         <a style="grid-row-start:1;grid-row-end:2;grid-column-start:2;grid-column-end:3;margin-left:10px;font-weight:bold;text-decoration:none;color:black;" asp-controller="Account" asp-action="UserAccount" asp-route-id="@user.Id">@user.Username</a>
         <p style="grid-row-start:2;grid-row-end:3;grid-column-start:2;grid-column-end:3;margin-left:10px;color:darkgray;">@user.Full_Name</p>
-        
+
         <div class="follow-unfollow-buttons">
             @if (user.Current_User_Following == true)
             {
@@ -36,7 +36,7 @@
 <div id="to-hide" style="display:none;"></div>
 
 
-    <script>
+<script>
         $('.unfollow-button').click((e) => {
             console.log('fired');
             $.ajax({
@@ -44,7 +44,7 @@
                 url: "/Account/UnfollowUser",
                 data: { id: $(e.target).attr('data-current-user-id') },
                 success: (responce) => {
-
+                    console.log($(e.target).attr('data-current-user-id'));
                     if ('@ViewBag.UserProfileId' == '@ViewBag.CurrUserId') {
 
                     $('#number-of-followings :first').text(`${parseInt($('#number-of-followings').text()) - 1}`);
@@ -70,6 +70,8 @@
                 url: "/Account/FollowUser",
                 data: { id: $(e.target).attr('data-current-user-id') },
                 success: (responce) => {
+                    console.log($(e.target).attr('data-current-user-id'));
+
                     if ('@ViewBag.UserProfileId' == '@ViewBag.CurrUserId') {
 
                     $('#number-of-followings :first').text(`${parseInt($('#number-of-followings').text()) + 1}`);
@@ -87,6 +89,6 @@
 
 
         });
-    </script>
+</script>
 
 
