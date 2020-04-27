@@ -7,7 +7,6 @@ namespace InstagramClone.Models
 {
     public class UserStatsModel
     {
-
         public int NumberOfFollowings { get; set; }
         public int NumberOfFollowers { get; set; }
 

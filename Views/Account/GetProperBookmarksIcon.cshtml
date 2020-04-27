@@ -1,57 +1,24 @@
-﻿@if (!ViewBag.IsBookmarked)
-{
-    <a id="bookmark-button">
-        <img src="~/Pics/icons8-bookmark-160.png" style="width:50px;height:50px;" />
-    </a>
-    <a id="unbookmark-button">
-        <img src="~/Pics/icons8-bookmark-64.png" style="width:50px;height:50px;display:none;" />
-    </a>
-}
-else
-{
-    <a id="bookmark-button">
-        <img src="~/Pics/icons8-bookmark-160.png" style="width:50px;height:50px;display:none;" />
-    </a>
-    <a id="unbookmark-button">
-        <img src="~/Pics/icons8-bookmark-64.png" style="width:50px;height:50px;" />
-    </a>
-}
+﻿<div id="bookmark" data-postId="@ViewBag.PostId">
 
+    @if (!ViewBag.IsBookmarked)
+    {
+        <a id="bookmark-button">
+            <img src="~/Pics/icons8-bookmark-160.png" style="width:50px;height:50px;" />
+        </a>
+        <a id="unbookmark-button">
+            <img src="~/Pics/icons8-bookmark-64.png" style="width:50px;height:50px;display:none;" />
+        </a>
+    }
+    else
+    {
+        <a id="bookmark-button">
+            <img src="~/Pics/icons8-bookmark-160.png" style="width:50px;height:50px;display:none;" />
+        </a>
+        <a id="unbookmark-button">
+            <img src="~/Pics/icons8-bookmark-64.png" style="width:50px;height:50px;" />
+        </a>
+    }
 
-<script>
-    $('#bookmark-button').click((e) => {
-        $('#bookmark-button img').css('display', 'none');
-        $('#unbookmark-button img').css('display', 'inline');
-    });
-    $('#unbookmark-button').click((e) => {
-        $.ajax({
-            type: "GET",
-            url: "/Account/UnbookmarkPost",
-            data: { postId: '@ViewBag.PostId' },
-            success: (responce) => {
+</div>
 
-            },
-            failure: (responce) => {
-
-            }
-        });
-    });
-    $('#bookmark-button').click((e) => {
-        $.ajax({
-            type: "GET",
-            url: "/Account/BookmarkPost",
-            data: { postId: '@ViewBag.PostId' },
-            success: (responce) => {
-
-            },
-            failure: (responce) => {
-
-            }
-        });
-    });
-
-    $('#unbookmark-button').click((e) => {
-        $('#unbookmark-button img').css('display', 'none');
-        $('#bookmark-button img').css('display', 'inline');
-    });
-</script>
+<script src="~/Scripts/BookmarkUnbookmarkButtonActionScript.js"></script>

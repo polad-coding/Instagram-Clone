@@ -255,75 +255,16 @@
                 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
                 <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
                 <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
+                <script src="~/Scripts/PostSubmitScript.js"></script>
+                <script src="~/Scripts/EditProfileModalScript.js"></script>
+
                 <script>
                 $(function () {
 
-                    $('#post-submit-button').click((e) => {
-                        e.preventDefault();
-
-                        let content = $('#add-post-modal-content').children('textarea').val();
-
-                        if (content.length > 0 && /\S/.test(content) && document.getElementById('form-file-selected').files.length > 0 && validFileType(document.getElementById('form-file-selected').files[0])) {
-                            $('#add-post-modal-content').submit();
-                            console.log('worked!');
-                        }
-
-                    });
 
 
-                    $('#edit-profile-submit-button').click((e) => {
-                        e.preventDefault();
-
-                        if (validFileType(document.getElementById('profile-picture-selector').files[0])) {
-                            $('#edit-profile-modal-content').submit();
-                        }
-                    });
-
-                    function validFileType(file) {
-                        let fileTypes = [
-                            'image/jpeg',
-                            'image/pjpeg',
-                            'image/png'
-                        ];
-
-                        if (file == null) {
-                            return true;
-                        }
-                      for(var i = 0; i < fileTypes.length; i++) {
-                        if(file.type === fileTypes[i]) {
-                          return true;
-                        }
-                      }
-
-                      return false;
-                    }
 
                     
-                    $('#add-comment-button').click((e) => {
-                        $('#text-input').focus();
-                    });
-                    $('#male-radio-button').click((e) => {
-                        $(e.target).css('background-color', '#3897F0');
-                        $(e.target).css('border', '1px solid #3897F0');
-                        $(e.target).css('color', 'white');
-                        $('#female-radio-button').css('background-color', 'white');
-                        $('#female-radio-button').css('border', '1px solid #DBDBDB');
-                        $('#female-radio-button').css('color', '#3897F0');
-                    });
-                    $('#female-radio-button').click((e) => {
-                        $(e.target).css('background-color', '#3897F0');
-                        $(e.target).css('border', '1px solid #3897F0');
-                        $(e.target).css('color', 'white');
-                        $('#male-radio-button').css('background-color', 'white');
-                        $('#male-radio-button').css('border', '1px solid #DBDBDB');
-                        $('#male-radio-button').css('color', '#3897F0');
-                    });
-                        $('#edit-profile-button').click((e) => {
-                            $('#edit-profile-modal').css('display', 'flex');
-                        });
-                        $('#edit-profile-modal-close').click((e) => {
-                            $('#edit-profile-modal').css('display', 'none');
-                        });
 
 
 
@@ -354,6 +295,9 @@
                             document.getElementById('inner-span-s').style.setProperty('opacity', '0.4');
                             document.getElementById('inner-span-s').style.setProperty('filter', 'alpha(opacity=40)');
                         }
+                    });
+
+                    $('#inner-span-f').click((e) => {
                         $.ajax({
                             type: "GET",
                             url: "/Account/GetAllPosts",
@@ -365,8 +309,9 @@
 
                             }
                         });
-
                     });
+
+
                     $('#inner-span-s').click((e) => {
                         if (e.target.tagName !== 'DIV') {
                             $(e.target).closest('#inner-span-s').css({ 'border-top': '1px solid black','margin-top':'-6px','padding-top':'5px','opacity':'','filter':''});
@@ -380,6 +325,11 @@
                              document.getElementById('inner-span-f').style.setProperty('opacity', '0.4');
                             document.getElementById('inner-span-f').style.setProperty('filter', 'alpha(opacity=40)');
                         }
+
+
+                    });
+
+                    $('#inner-span-s').click((e) => {
                         $.ajax({
                             type: "GET",
                             url: "/Account/GetAllBookmarks",
@@ -391,10 +341,7 @@
 
                             }
                         });
-
                     });
-
-
 
 
                     $('#number-of-followers').click((e) => {
@@ -412,6 +359,7 @@
                             }
                         });
                     });
+
                     $('#number-of-followings').click((e) => {
                         $('#followers-followings-modal').css('display', 'flex');
                         $.ajax({
@@ -429,14 +377,10 @@
                             }
                         });
                     });
+
                     $('#close').click((e) => {
                         $('#followers-followings-modal').css('display', 'none');
                     });
-
-
-
-
-
             });
                 </script>
             }

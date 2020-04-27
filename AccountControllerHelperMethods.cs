@@ -189,7 +189,7 @@ namespace InstagramClone
 
             p.Add("@Curr_User_Id", curr_user_id);
 
-            List<UserViewModel> users = connection.Query<UserViewModel>("dbo.IsUserFollowing", p, commandType: CommandType.StoredProcedure).ToList();
+            List<UserViewModel> users = connection.Query<UserViewModel>("dbo.GetAllUsers", p, commandType: CommandType.StoredProcedure).ToList();
 
             return users;
         }

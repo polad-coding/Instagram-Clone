@@ -9,7 +9,7 @@
         <img style="height:40px; width:40px; margin-right:10px; border-radius:50%;" src="~/Pics/standartPicture.jpg" />
     }
 </a>
-<a asp-action="UserAccount" asp-controller="Account" asp-route-id="@Model.Id" style="text-decoration:none;color:black; margin-right:10px;">
+<a id="username" asp-action="UserAccount" asp-controller="Account" asp-route-id="@Model.Id" data-userId="@Model.Id" style="text-decoration:none;color:black; margin-right:10px;">
     <span style="font-weight:bold;">@Model.Username</span>
 </a>
 
@@ -40,40 +40,4 @@ else if (Model.Current_User_Following == true && Model.Id != User.FindFirstValue
 }
 
 
-<script>
-    $('#comment-modal-follow-button').click((e) => {
-        $.ajax({
-            type: "GET",
-            url: "/Account/FollowUser",
-            data: { id: '@Model.Id'},
-            success: (responce) => {
-                $('#comment-modal-follow-button').css('display', 'none');
-                $('#comment-modal-unfollow-button').css('display', 'inline');
-                $('#number-of-followings :first').text(`${parseInt($('#number-of-followings').text()) + 1}`);
-                    $('#number-of-followings :last').text('followings');
-
-                    $('#number-of-followings :first').css('font-weight', 'bold');
-            },
-            failure: (responce) => {
-            }
-        });
-    });
-    $('#comment-modal-unfollow-button').click((e) => {
-        $.ajax({
-            type: "GET",
-            url: "/Account/UnfollowUser",
-            data: { id: '@Model.Id'},
-            success: (responce) => {
-                $('#comment-modal-unfollow-button').css('display', 'none');
-                $('#comment-modal-follow-button').css('display', 'inline');
-                $('#number-of-followings :first').text(`${parseInt($('#number-of-followings').text()) - 1}`);
-                    $('#number-of-followings :last').text('followings');
-
-                    $('#number-of-followings :first').css('font-weight', 'bold');
-            },
-            failure: (responce) => {
-            }
-        });
-    });
-
-</script>
+<script src="~/Scripts/CommentModalFollowUnfollowButtonActionScript.js"></script>

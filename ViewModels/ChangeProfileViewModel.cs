@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace InstagramClone.ViewModels
 {
     public class ChangeProfileViewModel
@@ -14,7 +15,7 @@ namespace InstagramClone.ViewModels
 
         [DataType(DataType.Text)]
         [Required(ErrorMessage = "Cannot be empty!")]
-        [Remote("IsUserNameExists","Account",ErrorMessage = "This username already exists.")]
+        [Remote("IsUserNameExists","Account",ErrorMessage = "This Username already exists.")]
         public string User_Name { get; set; }
 
         [DataType(DataType.Text)]
@@ -23,10 +24,10 @@ namespace InstagramClone.ViewModels
         [DataType(DataType.Text)]
         public string Gender { get; set; }
 
-        [DataType(DataType.EmailAddress)]
-        [Remote(action: "IsEmailExists", controller: "Account", ErrorMessage = "This Email already exists.")]
+        //TODO - check why DataType validation here doesnt work.
+        [EmailAddress(ErrorMessage = "This Email address is incorrect.")]
         [Required(ErrorMessage = "Cannot be empty!")]
-
+        [Remote(action: "IsEmailExists", controller: "Account", ErrorMessage = "This Email already exists.")]
         public string Email { get; set; }
 
         [DataType(DataType.MultilineText)]

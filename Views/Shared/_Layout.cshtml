@@ -6,7 +6,6 @@
     <title>@ViewData["Title"] - InstagramClone</title>
     <link rel="stylesheet" href="~/css/site.css" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/dist/jquery.unobtrusive-ajax.js"></script>
 </head>
 <body>
@@ -37,7 +36,6 @@
         </nav>
         <main>
             @RenderBody()
-
         </main>
 
 
@@ -48,42 +46,43 @@
 
 
     @RenderSection("Scripts", required: false);
+    <script src="~/Scripts/ImageInteractionScript.js"></script>
     <script>
-        //here
-        $('.user-photo').mouseenter((e) => {
-            $.ajax({
-                type: "GET",
-                url: "/Account/GetPostStats",
-                data: { postId: $(e.target).attr('data-post-id') },
-                success: (responce) => {
-                    $(e.target.nextElementSibling).html(responce);
-                },
-                failure: (responce) => {
+        ////here
+        //$('.user-photo').mouseenter((e) => {
+        //    $.ajax({
+        //        type: "GET",
+        //        url: "/Account/GetPostStats",
+        //        data: { postId: $(e.target).attr('data-post-id') },
+        //        success: (responce) => {
+        //            $(e.target.nextElementSibling).html(responce);
+        //        },
+        //        failure: (responce) => {
 
-                }
-            });
-            $(e.target.nextElementSibling).css('visibility', 'visible');
-        });
+        //        }
+        //    });
+        //    $(e.target.nextElementSibling).css('visibility', 'visible');
+        //});
 
-        //here
-        $('.user-photo').mouseleave((e) => {
-            $(e.target.nextElementSibling).css('visibility', 'hidden');
-        });
+        ////here
+        //$('.user-photo').mouseleave((e) => {
+        //    $(e.target.nextElementSibling).css('visibility', 'hidden');
+        //});
 
-        //this
-        $('.user-photo').click((e) => {
-            $.ajax({
-                type: "GET",
-                url: "/Account/GetProperBookmarksIcon",
-                data: { postId: $(e.target).attr('data-post-id') },
-                success: (responce) => {
-                    $('#bookmark-post-button').html(responce);
-                },
-                failure: (responce) => {
+        ////this
+        //$('.user-photo').click((e) => {
+        //    $.ajax({
+        //        type: "GET",
+        //        url: "/Account/GetProperBookmarksIcon",
+        //        data: { postId: $(e.target).attr('data-post-id') },
+        //        success: (responce) => {
+        //            $('#bookmark-post-button').html(responce);
+        //        },
+        //        failure: (responce) => {
 
-                }
-            });
-        });
+        //        }
+        //    });
+        //});
 
         //here
         $('#caption-post-form').submit((e) => {
@@ -105,30 +104,30 @@
             });
         });
 
-        //here
-        $('.user-photo').click((e) => {
-            $('#post-modal').css('display', 'flex');
-        });
+        ////here
+        //$('.user-photo').click((e) => {
+        //    $('#post-modal').css('display', 'flex');
+        //});
 
-        //here
-        $('.user-photo').click((e) => {
-            $.ajax({
-                type: "GET",
-                url: "/Account/GetProperLikeIcon",
-                data: { postId: $(e.target).attr('data-post-id') },
-                success: (responce) => {
-                    $('#like-picture-placeholder').html(responce);
-                },
-                failure: (responce) => {
+        ////here
+        //$('.user-photo').click((e) => {
+        //    $.ajax({
+        //        type: "GET",
+        //        url: "/Account/GetProperLikeIcon",
+        //        data: { postId: $(e.target).attr('data-post-id') },
+        //        success: (responce) => {
+        //            $('#like-picture-placeholder').html(responce);
+        //        },
+        //        failure: (responce) => {
 
-                }
-            });
-        });
+        //        }
+        //    });
+        //});
 
-        //here
-        $('.user-photo').click((e) => {
-            $('#post-caption-part').attr('data-post-id', $(e.target).attr('data-post-id'));
-        });
+        ////here
+        //$('.user-photo').click((e) => {
+        //    $('#post-caption-part').attr('data-post-id', $(e.target).attr('data-post-id'));
+        //});
 
 
 
@@ -138,38 +137,38 @@
             $('#photo-part img').remove();
         });
 
-        //here
-        $('.user-photo').one('click', (e) => {
-            $('#number-of-likes-part p').text(`Liked by ${$(e.target).attr('data-number-likes')} users`);
-        });
+        ////here
+        //$('.user-photo').one('click', (e) => {
+        //    $('#number-of-likes-part p').text(`Liked by ${$(e.target).attr('data-number-likes')} users`);
+        //});
 
-        //here
-        $('.user-photo').click((e) => {
-            $('#photo-part').append(`<img style="width:100%;height:100%;" src="${$(e.target).attr('src')}"/>`);
-            $.ajax({
-                type: "GET",
-                url: "/Account/GetAuthorGeneralInfo",
-                data: { id: $(e.target).attr('data-author-id'), postId: $(e.target).attr('data-post-id') },
-                success: (responce) => {
-                    $('#comments-top-part').html(responce);
-                },
-                failure: (responce) => {
+        ////here
+        //$('.user-photo').click((e) => {
+        //    $('#photo-part').append(`<img style="width:100%;height:100%;" src="${$(e.target).attr('src')}"/>`);
+        //    $.ajax({
+        //        type: "GET",
+        //        url: "/Account/GetAuthorGeneralInfo",
+        //        data: { id: $(e.target).attr('data-author-id'), postId: $(e.target).attr('data-post-id') },
+        //        success: (responce) => {
+        //            $('#comments-top-part').html(responce);
+        //        },
+        //        failure: (responce) => {
 
-                }
-            });
-            $.ajax({
-                type: "GET",
-                url: "/Account/GetAllCaptions",
-                data: { postId: $(e.target).attr('data-post-id') },
-                success: (responce) => {
-                    console.log('blah');
-                    $('#comments-central-part').html(responce);
-                },
-                failure: (responce) => {
+        //        }
+        //    });
+        //    $.ajax({
+        //        type: "GET",
+        //        url: "/Account/GetAllCaptions",
+        //        data: { postId: $(e.target).attr('data-post-id') },
+        //        success: (responce) => {
+        //            console.log('blah');
+        //            $('#comments-central-part').html(responce);
+        //        },
+        //        failure: (responce) => {
 
-                }
-            });
-        });
+        //        }
+        //    });
+        //});
 
         $('#text-input').keyup((e) => {
                         if ($(e.target).val().replace(/\s+/g, '').length > 0) {

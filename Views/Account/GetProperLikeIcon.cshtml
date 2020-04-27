@@ -1,54 +1,21 @@
-﻿@if (ViewBag.IsLiked)
-{
-    <a id="unlike-button" style="display:inline;">
-        <img src="~/Pics/icons8-like.png" style="height:30px;width:30px;" />
-    </a>
-    <a id="like-button" style="display:none;">
-        <img src="~/Pics/heathicon.png" style="height:30px;width:30px;" />
-    </a>
-}
-else
-{
-    <a id="like-button" style="display:inline;">
-        <img src="~/Pics/heathicon.png" style="height:30px;width:30px;" />
-    </a>
-    <a id="unlike-button" style="display:none;">
-        <img src="~/Pics/icons8-like.png" style="height:30px;width:30px;" />
-    </a>
-}
-
-<script>
-    $('#unlike-button').click((e) => {
-        console.log('nio');
-        $('#unlike-button').css('display', 'none');
-        $('#like-button').css('display', 'inline');
-        $.ajax({
-            type: "GET",
-            url: "/Account/UnlikePhoto",
-            data: { postId: '@ViewBag.PostId' },
-            success: (responce) => {
-                $('#number-of-likes-part p').text(responce);
-            },
-            failure: (responce) => {
-
-            }
-        });
-    });
-    $('#like-button').click((e) => {
-        console.log('nio');
-
-        $('#like-button').css('display', 'none');
-        $('#unlike-button').css('display', 'inline');
-        $.ajax({
-            type: "GET",
-            url: "/Account/LikePhoto",
-            data: { postId: '@ViewBag.PostId' },
-            success: (responce) => {
-                $('#number-of-likes-part p').text(responce);
-            },
-            failure: (responce) => {
-
-            }
-        });
-    });
-</script>
+﻿<div id="like-icon-container" data-postId="@ViewBag.PostId">
+    @if (ViewBag.IsLiked)
+    {
+        <a id="unlike-button" style="display:inline;">
+            <img src="~/Pics/icons8-like.png" style="height:30px;width:30px;" />
+        </a>
+        <a id="like-button" style="display:none;">
+            <img src="~/Pics/heathicon.png" style="height:30px;width:30px;" />
+        </a>
+    }
+    else
+    {
+        <a id="like-button" style="display:inline;">
+            <img src="~/Pics/heathicon.png" style="height:30px;width:30px;" />
+        </a>
+        <a id="unlike-button" style="display:none;">
+            <img src="~/Pics/icons8-like.png" style="height:30px;width:30px;" />
+        </a>
+    }
+</div>
+<script src="~/Scripts/LikeButtonActionsScript.js"></script>

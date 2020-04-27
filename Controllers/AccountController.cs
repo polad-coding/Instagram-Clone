@@ -374,16 +374,25 @@ namespace InstagramClone.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
 
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("UserAccount", "Account");
-                }
-                else
+                if (user == null)
                 {
                     ModelState.AddModelError("", "Incorrect login or password");
                 }
+                else
+                {
+                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("UserAccount", "Account");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Incorrect login or password");
+                    }
+                }
+
             }
             return View(model);
         }
@@ -456,7 +465,7 @@ namespace InstagramClone.Controllers
 
                 }
             }
-            return View();
+            return RedirectToAction("UserAccount");
         }
 
         /// <summary>
@@ -471,13 +480,23 @@ namespace InstagramClone.Controllers
                 var p = new DynamicParameters();
                 p.Add("@Email", Email);
 
-                string matchId = connection.QueryFirst<string>("dbo.IsMailUnique", p, commandType: CommandType.StoredProcedure);
+                string matchId = connection.QueryFirstOrDefault<string>("dbo.IsMailUnique", p, commandType: CommandType.StoredProcedure);
 
-                if (matchId != null && matchId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                if (User.FindFirstValue(ClaimTypes.NameIdentifier) == null)
                 {
-                    return Json(false);
+                    if (matchId != null)
+                    {
+                        return Json(false);
+                    }
                 }
-
+                else
+                {
+                    if (matchId != null && matchId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    {
+                        return Json(false);
+                    }
+                }
+                
             }
 
             return Json(true);
@@ -495,11 +514,21 @@ namespace InstagramClone.Controllers
                 var p = new DynamicParameters();
                 p.Add("@UserName", User_Name);
 
-                string matchId = connection.QueryFirst<string>("dbo.IsUserNameUnique", p, commandType: CommandType.StoredProcedure);
+                string matchId = connection.QueryFirstOrDefault<string>("dbo.IsUserNameUnique", p, commandType: CommandType.StoredProcedure);
 
-                if (matchId != null && matchId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                if (User.FindFirstValue(ClaimTypes.NameIdentifier) == null)
                 {
-                    return Json(false);
+                    if (matchId != null)
+                    {
+                        return Json(false);
+                    }
+                }
+                else
+                {
+                    if (matchId != null && matchId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    {
+                        return Json(false);
+                    }
                 }
             }
 
@@ -606,7 +635,7 @@ namespace InstagramClone.Controllers
         /// <param name="id"></param>
         /// <param name="postId"></param>
         /// <returns></returns>
-        public IActionResult GetAuthorGeneralInfo(string id, int postId)
+        public IActionResult GetAuthorGeneralInfo(string id, string postId)
         {
             UserViewModel user;
 
@@ -628,6 +657,7 @@ namespace InstagramClone.Controllers
             }
 
             ViewBag.PostId = postId;
+            ViewBag.UserId = user.Id;
 
             return PartialView(user);
         }

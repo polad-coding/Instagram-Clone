@@ -11,7 +11,7 @@ namespace InstagramClone.ViewModels
     {
         [Required]
         [DataType(DataType.EmailAddress)]
-        [Remote(action: "IsEmailExists", controller: "Account",ErrorMessage = "This Email address already exists in our database.")]
+        [Remote("IsEmailExists", "Account",ErrorMessage = "This Email address already exists in our database.")]
         public string Email { get; set; }
 
         public string Full_Name { get; set; }
