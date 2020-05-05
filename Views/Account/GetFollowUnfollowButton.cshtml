@@ -1,21 +1,24 @@
-﻿@if (!ViewBag.IsFollowing)
-{
-    <a id="FollowButton">
-        Follow
-    </a>
-    <a id="UnfollowButton" style="display:none;">
-        Unfollow
-    </a>
-}
-else
-{
-    <a id="FollowButton" style="display:none;">
-        Follow
-    </a>
-    <a id="UnfollowButton">
-        Unfollow
-    </a>
-}
+﻿<div id="follow-unfollow-button-container" data-user-id="@ViewBag.UserId">
+    @if (!ViewBag.IsFollowing)
+    {
+        <a id="FollowButton">
+            Follow
+        </a>
+        <a id="UnfollowButton" style="display:none;">
+            Unfollow
+        </a>
+    }
+    else
+    {
+        <a id="FollowButton" style="display:none;">
+            Follow
+        </a>
+        <a id="UnfollowButton">
+            Unfollow
+        </a>
+    }
+</div>
+
 
 
 <script src="~/Scripts/FollowUnfollowButtonOnUserProfileScript.js"></script>

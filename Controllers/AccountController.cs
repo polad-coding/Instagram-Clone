@@ -9,6 +9,7 @@ using System.Web.Helpers;
 using Dapper;
 using InstagramClone.Models;
 using InstagramClone.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -68,6 +69,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult GetFollowings(string id)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             List<UserViewModel> followings;
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -95,6 +98,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult GetProperLikeIcon(int postId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
@@ -117,6 +122,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult UnlikePhoto(int postId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             int numberOfLikes;
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -142,6 +149,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult LikePhoto(int postId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             int numberOfLikes;
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -167,6 +176,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult GetProperBookmarksIcon(int postId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
@@ -189,6 +200,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult BookmarkPost(int postId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
@@ -209,6 +222,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult UnbookmarkPost(int postId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
@@ -229,6 +244,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult GetFollowUnfollowButton(string userId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
@@ -251,6 +268,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult GetAllBookmarks()
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             List<PostViewModel> posts;
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -273,6 +292,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult GetAllPosts(string userId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             List<PostViewModel> posts;
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -294,6 +315,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult GetPostStats(int postId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
@@ -317,6 +340,8 @@ namespace InstagramClone.Controllers
         [HttpPost]
         public IActionResult AddComment(string text, int postId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
@@ -339,6 +364,8 @@ namespace InstagramClone.Controllers
         [HttpGet]
         public IActionResult GetFollowers(string id)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             List<UserViewModel> followers = new List<UserViewModel>();
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -400,6 +427,8 @@ namespace InstagramClone.Controllers
         [HttpPost]
         public IActionResult AddPost(string caption, IFormFile img)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             byte[] imageData = null;
 
             using (var binaryReader = new BinaryReader(img.OpenReadStream()))
@@ -424,6 +453,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult GetAllCaptions(string postId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             List<CaptionViewModel> captions;
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -447,6 +478,8 @@ namespace InstagramClone.Controllers
         [HttpPost]
         public IActionResult ChangeProfile(ChangeProfileViewModel model)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             if (ModelState.IsValid)
             {
                 using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -542,6 +575,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult FollowUser(string id)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
@@ -561,6 +596,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult UnfollowUser(string id)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
@@ -580,6 +617,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult Navigate()
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             List<PostViewModel> posts;
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -599,10 +638,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult UserAccount(string Id)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("SignIn", "Account");
-            }
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
@@ -637,6 +674,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult GetAuthorGeneralInfo(string id, string postId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             UserViewModel user;
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -670,6 +709,8 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult DeletePost(string userId, int postId)
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
+
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
@@ -732,6 +773,7 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public IActionResult GetAllUsers()
         {
+            if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
             List<UserViewModel> users;
 

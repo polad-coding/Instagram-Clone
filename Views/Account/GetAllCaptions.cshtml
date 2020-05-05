@@ -13,8 +13,8 @@
                 <img style='grid-row-start:1;grid-row-end:2; width:40px; height:40px; border-radius:50%;' src="~/Pics/standartPicture.jpg" />
             }
         </a>
-        <div style="margin-top:10px;">
-            <a style="text-decoration:none; margin-left:10px; margin-right:5px;" asp-action="UserAccount" asp-controller="Account" asp-route-id="@caption.Author_Id">
+        <div style="margin-top:10px;margin-left:10px;">
+            <a style="text-decoration:none; margin-right:5px;" asp-action="UserAccount" asp-controller="Account" asp-route-id="@caption.Author_Id">
                 <span style="font-weight:bold;color:black;">@caption.Username</span>
             </a>
              <span>@caption.Caption_Text</span>

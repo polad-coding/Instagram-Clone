@@ -1,32 +1,4 @@
-﻿//$('#password-field').keyup((e) => {
-//    if ($(e.target).val().length > 0) {
-//        if ($('#show-hide-password-button').css('visibility') === 'visible') {
-//            return;
-//        }
-//        $('#show-hide-password-button').attr('value', 'Show');
-//        $('#password-field').css('width', '81%');
-//        $('#show-hide-password-button').css('visibility', 'visible');
-//    }
-//    else {
-//        $('#password-field').css('width', '100%');
-//        $('#show-hide-password-button').css('visibility', 'collapse');
-//        $('#show-hide-password-button').attr('value', 'Show');
-//        $('#password-field').attr('type', 'password');
-//    }
-//});
-
-//$('#show-hide-password-button').click((e) => {
-//    if ($(e.target).attr('value') === 'Show') {
-//        $('#password-field').attr('type', 'text');
-//        $('#show-hide-password-button').attr('value', 'Hide');
-//    }
-//    else if ($(e.target).attr('value') === 'Hide') {
-//        $('#password-field').attr('type', 'password');
-//        $('#show-hide-password-button').attr('value', 'Show');
-//    }
-//});
-
-$('#password-field').keyup((e) => {
+﻿$('#password-field').keyup((e) => {
     if ($(e.target).val().length > 0) {
         if ($('#show-hide-password-button').css('visibility') === 'visible') {
             return;

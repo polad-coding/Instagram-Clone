@@ -9,7 +9,7 @@ $('#FollowButton').click((e) => {
     $.ajax({
         type: "GET",
         url: "/Account/FollowUser",
-        data: { id: '@ViewBag.UserId' },
+        data: { id: $('#follow-unfollow-button-container').attr('data-user-id') },
         success: (responce) => {
 
         },
@@ -23,7 +23,7 @@ $('#UnfollowButton').click((e) => {
     $.ajax({
         type: "GET",
         url: "/Account/UnfollowUser",
-        data: { id: '@ViewBag.UserId' },
+        data: { id: $('#follow-unfollow-button-container').attr('data-user-id') },
         success: (responce) => {
 
         },
