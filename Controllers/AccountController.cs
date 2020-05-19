@@ -103,10 +103,10 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Post_Id", postId);
-                p.Add("@User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                p.Add("A_Post_Id", postId);
+                p.Add("A_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                bool isLiked = Convert.ToBoolean(connection.QueryFirst<int>("dbo.IsLikedByUser", p, commandType: CommandType.StoredProcedure));
+                bool isLiked = Convert.ToBoolean(connection.QueryFirst<int>("IsLikedByUser", p, commandType: CommandType.StoredProcedure));
 
                 ViewBag.IsLiked = isLiked;
                 ViewBag.PostId = postId;
@@ -129,13 +129,13 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Post_Id", postId);
-                p.Add("@User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                p.Add("@Number_Of_Likes", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+                p.Add("A_Post_Id", postId);
+                p.Add("A_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                p.Add("A_Number_Of_Likes", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-                connection.Execute("dbo.UnlikePhoto", p, commandType: CommandType.StoredProcedure);
+                connection.Execute("UnlikePhoto", p, commandType: CommandType.StoredProcedure);
 
-                numberOfLikes = p.Get<int>("@Number_Of_Likes");
+                numberOfLikes = p.Get<int>("A_Number_Of_Likes");
 
             }
 
@@ -156,13 +156,13 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Post_Id", postId);
-                p.Add("@User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                p.Add("@Number_Of_Likes", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+                p.Add("A_Post_Id", postId);
+                p.Add("A_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                p.Add("A_Number_Of_Likes", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-                connection.Execute("dbo.LikePhoto", p, commandType: CommandType.StoredProcedure);
+                connection.Execute("LikePhoto", p, commandType: CommandType.StoredProcedure);
 
-                numberOfLikes = p.Get<int>("@Number_Of_Likes");
+                numberOfLikes = p.Get<int>("A_Number_Of_Likes");
 
             }
 
@@ -181,10 +181,10 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Post_Id", postId);
-                p.Add("@User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                p.Add("A_Post_Id", postId);
+                p.Add("A_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                bool isBookmarked = Convert.ToBoolean(connection.QueryFirst<int>("dbo.CheckIfBookmarked", p, commandType: CommandType.StoredProcedure));
+                bool isBookmarked = Convert.ToBoolean(connection.QueryFirst<int>("CheckIfBookmarked", p, commandType: CommandType.StoredProcedure));
 
                 ViewBag.IsBookmarked = isBookmarked;
                 ViewBag.PostId = postId;
@@ -205,10 +205,10 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Post_Id", postId);
-                p.Add("@User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                p.Add("A_Post_Id", postId);
+                p.Add("A_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                connection.Execute("dbo.BookmarkPost", p, commandType: CommandType.StoredProcedure);
+                connection.Execute("BookmarkPost", p, commandType: CommandType.StoredProcedure);
 
             }
 
@@ -227,10 +227,10 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Post_Id", postId);
-                p.Add("@User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                p.Add("A_Post_Id", postId);
+                p.Add("A_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                connection.Execute("dbo.UnbookmarkPost", p, commandType: CommandType.StoredProcedure);
+                connection.Execute("UnbookmarkPost", p, commandType: CommandType.StoredProcedure);
 
             }
 
@@ -249,10 +249,10 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                p.Add("@Following_Id", userId);
+                p.Add("A_Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                p.Add("A_Following_Id", userId);
 
-                bool isFollowing = Convert.ToBoolean(connection.QueryFirst<int>("dbo.CheckIfUserFollowing", p, commandType: CommandType.StoredProcedure));
+                bool isFollowing = Convert.ToBoolean(connection.QueryFirst<int>("CheckIfUserFollowing", p, commandType: CommandType.StoredProcedure));
 
                 ViewBag.IsFollowing = isFollowing;
                 ViewBag.UserId = userId;
@@ -275,9 +275,9 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                p.Add("A_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                posts = connection.Query<PostViewModel>("dbo.GetBookmarksByUserId", p, commandType: CommandType.StoredProcedure).ToList();
+                posts = connection.Query<PostViewModel>("GetBookmarksByUserId", p, commandType: CommandType.StoredProcedure).ToList();
 
             }
 
@@ -299,9 +299,9 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Id", userId);
+                p.Add("A_Id", userId);
 
-                posts = connection.Query<PostViewModel>("dbo.GetPostsByUserId", p, commandType: CommandType.StoredProcedure).ToList();
+                posts = connection.Query<PostViewModel>("GetPostsByUserId", p, commandType: CommandType.StoredProcedure).ToList();
 
             }
 
@@ -320,9 +320,9 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Post_Id", postId);
+                p.Add("A_Post_Id", postId);
 
-                var responce = connection.QueryFirst<PostStatsModel>("dbo.GetPostStats", p, commandType: CommandType.StoredProcedure);
+                var responce = connection.QueryFirst<PostStatsModel>("GetPostStats", p, commandType: CommandType.StoredProcedure);
 
                 ViewBag.Number_Of_Likes = responce.Number_Of_Likes == null ? 0 : responce.Number_Of_Likes;
                 ViewBag.Number_Of_Captions = responce.Number_Of_Captions == null ? 0 : responce.Number_Of_Captions;
@@ -345,11 +345,11 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Author_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                p.Add("@Text", text);
-                p.Add("@Post_Id", postId);
+                p.Add("A_Author_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                p.Add("A_Text", text);
+                p.Add("A_Post_Id", postId);
 
-                connection.Execute("dbo.AddCaption", p, commandType: CommandType.StoredProcedure);
+                connection.Execute("AddCaption", p, commandType: CommandType.StoredProcedure);
 
             }
 
@@ -460,9 +460,9 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Post_Id", postId);
+                p.Add("A_Post_Id", postId);
 
-                captions = connection.Query<CaptionViewModel>("dbo.GetAllPostCaptions", p, commandType: CommandType.StoredProcedure).ToList();
+                captions = connection.Query<CaptionViewModel>("GetAllPostCaptions", p, commandType: CommandType.StoredProcedure).ToList();
             }
 
             captions = captions.OrderBy((m) => m.Creation_Time).ToList();
@@ -511,9 +511,9 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Email", Email);
+                p.Add("A_Email", Email);
 
-                string matchId = connection.QueryFirstOrDefault<string>("dbo.IsMailUnique", p, commandType: CommandType.StoredProcedure);
+                string matchId = connection.QueryFirstOrDefault<string>("IsMailUnique", p, commandType: CommandType.StoredProcedure);
 
                 if (User.FindFirstValue(ClaimTypes.NameIdentifier) == null)
                 {
@@ -545,9 +545,9 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@UserName", User_Name);
+                p.Add("A_UserName", User_Name);
 
-                string matchId = connection.QueryFirstOrDefault<string>("dbo.IsUserNameUnique", p, commandType: CommandType.StoredProcedure);
+                string matchId = connection.QueryFirstOrDefault<string>("IsUserNameUnique", p, commandType: CommandType.StoredProcedure);
 
                 if (User.FindFirstValue(ClaimTypes.NameIdentifier) == null)
                 {
@@ -580,10 +580,10 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                p.Add("@Following_Id", id);
+                p.Add("A_Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                p.Add("A_Following_Id", id);
 
-                connection.Execute("dbo.FollowUser", p, commandType: CommandType.StoredProcedure);
+                connection.Execute("FollowUser", p, commandType: CommandType.StoredProcedure);
             }
 
             return new EmptyResult();
@@ -601,10 +601,10 @@ namespace InstagramClone.Controllers
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
-                p.Add("@Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
-                p.Add("@Following_Id", id);
+                p.Add("A_Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                p.Add("A_Following_Id", id);
 
-                connection.Execute("dbo.UnfollowUser", p, commandType: CommandType.StoredProcedure);
+                connection.Execute("UnfollowUser", p, commandType: CommandType.StoredProcedure);
             }
 
             return new EmptyResult();
@@ -625,7 +625,7 @@ namespace InstagramClone.Controllers
             {
                 var p = new DynamicParameters();
 
-                posts = connection.Query<PostViewModel>("dbo.GetAllPosts", p, commandType: CommandType.StoredProcedure).ToList();
+                posts = connection.Query<PostViewModel>("GetAllPosts", p, commandType: CommandType.StoredProcedure).ToList();
             }
 
             return View(posts);
@@ -715,9 +715,9 @@ namespace InstagramClone.Controllers
             {
                 var p = new DynamicParameters();
 
-                p.Add("@Post_Id", postId);
+                p.Add("A_Post_Id", postId);
 
-                connection.Execute("dbo.DeletePost", p, commandType: CommandType.StoredProcedure);
+                connection.Execute("DeletePost", p, commandType: CommandType.StoredProcedure);
             }
 
             return RedirectToAction("UserAccount", "Account", new { id = userId });
