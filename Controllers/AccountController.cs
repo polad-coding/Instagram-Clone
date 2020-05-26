@@ -14,6 +14,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
+//using MySql.Data.MySqlClient;
+//using MySql.Data.MySqlClient;
+//using MySql.Data.MySqlClient;
+
 
 namespace InstagramClone.Controllers
 {
@@ -73,7 +78,7 @@ namespace InstagramClone.Controllers
 
             List<UserViewModel> followings;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
 
                 followings = AccountControllerHelperMethods.GetAllFollowings(connection, id);
@@ -96,11 +101,11 @@ namespace InstagramClone.Controllers
         /// </summary>
         /// <param name="postId"></param>
         /// <returns></returns>
-        public IActionResult GetProperLikeIcon(int postId)
+        public IActionResult GetProperLikeIcon(long postId)
         {
             if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Post_Id", postId);
@@ -126,7 +131,7 @@ namespace InstagramClone.Controllers
 
             int numberOfLikes;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Post_Id", postId);
@@ -135,7 +140,9 @@ namespace InstagramClone.Controllers
 
                 connection.Execute("UnlikePhoto", p, commandType: CommandType.StoredProcedure);
 
-                numberOfLikes = p.Get<int>("A_Number_Of_Likes");
+                var nol = p.Get<int?>("A_Number_Of_Likes");
+
+                numberOfLikes = nol == null ? 0 : (int)nol;
 
             }
 
@@ -153,7 +160,7 @@ namespace InstagramClone.Controllers
 
             int numberOfLikes;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Post_Id", postId);
@@ -162,7 +169,8 @@ namespace InstagramClone.Controllers
 
                 connection.Execute("LikePhoto", p, commandType: CommandType.StoredProcedure);
 
-                numberOfLikes = p.Get<int>("A_Number_Of_Likes");
+                var nol = p.Get<int?>("A_Number_Of_Likes");
+                numberOfLikes = nol == null ? 0 : (int)nol;
 
             }
 
@@ -174,11 +182,11 @@ namespace InstagramClone.Controllers
         /// </summary>
         /// <param name="postId"></param>
         /// <returns></returns>
-        public IActionResult GetProperBookmarksIcon(int postId)
+        public IActionResult GetProperBookmarksIcon(long postId)
         {
             if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Post_Id", postId);
@@ -202,7 +210,7 @@ namespace InstagramClone.Controllers
         {
             if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Post_Id", postId);
@@ -224,7 +232,7 @@ namespace InstagramClone.Controllers
         {
             if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Post_Id", postId);
@@ -246,7 +254,7 @@ namespace InstagramClone.Controllers
         {
             if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -272,7 +280,7 @@ namespace InstagramClone.Controllers
 
             List<PostViewModel> posts;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_User_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -296,7 +304,7 @@ namespace InstagramClone.Controllers
 
             List<PostViewModel> posts;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Id", userId);
@@ -317,7 +325,7 @@ namespace InstagramClone.Controllers
         {
             if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Post_Id", postId);
@@ -338,11 +346,11 @@ namespace InstagramClone.Controllers
         /// <param name="postId"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult AddComment(string text, int postId)
+        public IActionResult AddComment(string text, long postId)
         {
             if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Author_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -368,7 +376,7 @@ namespace InstagramClone.Controllers
 
             List<UserViewModel> followers = new List<UserViewModel>();
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
 
                 followers = AccountControllerHelperMethods.GetAllFollowers(connection, id);
@@ -436,9 +444,9 @@ namespace InstagramClone.Controllers
                 imageData = binaryReader.ReadBytes((int)img.Length);
             }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
-                int postId = AccountControllerHelperMethods.AddPost(connection, User.FindFirstValue(ClaimTypes.NameIdentifier), imageData, caption);
+                long postId = AccountControllerHelperMethods.AddPost(connection, User.FindFirstValue(ClaimTypes.NameIdentifier), imageData, caption);
 
                 posts.Add(new PostViewModel() { Id = postId, IUser_Id = User.FindFirstValue(ClaimTypes.NameIdentifier), Picture = imageData });
             }
@@ -457,7 +465,7 @@ namespace InstagramClone.Controllers
 
             List<CaptionViewModel> captions;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Post_Id", postId);
@@ -482,7 +490,7 @@ namespace InstagramClone.Controllers
 
             if (ModelState.IsValid)
             {
-                using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+                using (IDbConnection connection = new MySqlConnection(connectionString))
                 {
                     byte[] imageData = null;
 
@@ -508,12 +516,13 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public JsonResult IsEmailExists(string Email)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Email", Email);
 
                 string matchId = connection.QueryFirstOrDefault<string>("IsMailUnique", p, commandType: CommandType.StoredProcedure);
+                //connection.Execute("",null,commandType: CommandType.StoredProcedure);
 
                 if (User.FindFirstValue(ClaimTypes.NameIdentifier) == null)
                 {
@@ -542,7 +551,7 @@ namespace InstagramClone.Controllers
         /// <returns></returns>
         public JsonResult IsUserNameExists(string User_Name)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_UserName", User_Name);
@@ -577,7 +586,7 @@ namespace InstagramClone.Controllers
         {
             if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -598,7 +607,7 @@ namespace InstagramClone.Controllers
         {
             if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
                 p.Add("A_Follower_Id", User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -621,7 +630,7 @@ namespace InstagramClone.Controllers
 
             List<PostViewModel> posts;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
 
@@ -641,7 +650,7 @@ namespace InstagramClone.Controllers
             if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 if (Id == "null" || Id == null)
                 {
@@ -678,7 +687,7 @@ namespace InstagramClone.Controllers
 
             UserViewModel user;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
 
                 user = AccountControllerHelperMethods.GetUser(id, connection);
@@ -707,11 +716,11 @@ namespace InstagramClone.Controllers
         /// <param name="userId"></param>
         /// <param name="postId"></param>
         /// <returns></returns>
-        public IActionResult DeletePost(string userId, int postId)
+        public IActionResult DeletePost(string userId, long postId)
         {
             if (!User.Identity.IsAuthenticated) { return RedirectToAction("SignIn", "Account"); }
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 var p = new DynamicParameters();
 
@@ -749,7 +758,7 @@ namespace InstagramClone.Controllers
                 {
                     await _signInManager.SignInAsync(user, false);
 
-                    using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+                    using (IDbConnection connection = new MySqlConnection(connectionString))
                     {
                         AccountControllerHelperMethods.CreateInstagramUser(connection, user.Id, model);
                     }
@@ -777,7 +786,7 @@ namespace InstagramClone.Controllers
 
             List<UserViewModel> users;
 
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(connectionString))
             {
                 users = AccountControllerHelperMethods.GetAllUsers(User.FindFirstValue(ClaimTypes.NameIdentifier), connection);
 

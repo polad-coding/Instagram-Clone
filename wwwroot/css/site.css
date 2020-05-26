@@ -35,6 +35,14 @@ span {
     opacity: 0.6;
 }
 
+a[class="FollowButton"]:hover{
+    cursor:pointer;
+}
+
+a[class="UnfollowButton"]:hover {
+    cursor: pointer;
+}
+
 #FollowButton, #UnfollowButton {
     text-decoration: none;
     color: black;
@@ -64,6 +72,7 @@ span {
     padding: 5px;
     margin-top: auto;
     margin-bottom: auto;
+    cursor:pointer;
 }
 
 .follow-button {
@@ -74,6 +83,7 @@ span {
     padding: 5px;
     margin-top: auto;
     margin-bottom: auto;
+    cursor:pointer;
 }
 
 .following-user a:hover {
@@ -287,13 +297,7 @@ main {
         resize: none;
     }
 
-#post-modal-content {
-    margin: auto;
-    width: 1000px;
-    height: 640px;
-    display: grid;
-    grid-template-columns: 65% 35%;
-}
+
 
 #comments-part {
     display: grid;
@@ -553,6 +557,8 @@ input.input-validation-error {
     display: flex;
 }
 
+
+
     .person:not(:last-child) {
         margin-bottom: 20px;
     }
@@ -602,6 +608,8 @@ input.input-validation-error {
     align-self: center;
     margin-left: auto;
 }
+
+
 
 /*Buttons hover effects*/
 .grid-container a:hover {
@@ -675,4 +683,20 @@ input.input-validation-error {
         height: 100vh;
         margin-top: 80px;
     }
+
+    #post-modal-content {
+        margin: auto;
+        width: 800px;
+        height: 500px;
+        display: grid;
+        grid-template-columns: 65% 35%;
+    }
+}
+
+#post-modal-content {
+    margin: auto;
+    width: 1000px;
+    height: 640px;
+    display: grid;
+    grid-template-columns: 65% 35%;
 }

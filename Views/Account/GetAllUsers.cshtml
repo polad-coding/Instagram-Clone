@@ -18,7 +18,7 @@
                 <a href="@Url.Action("UserAccount", "Account", new { id = user.Id})">@user.Username</a>
                 <p>@user.Full_Name</p>
             </div>
-            <div class="follow-unfollow-user-button-placeholder" data-userId="@user.Id">
+            <div class="follow-unfollow-user-button-placeholder" data-userId="@user.Id" style="cursor:pointer;">
                 @if (!user.Current_User_Following)
                 {
                     <a class="FollowButton">

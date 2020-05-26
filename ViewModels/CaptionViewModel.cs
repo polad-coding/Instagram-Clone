@@ -7,7 +7,7 @@ namespace InstagramClone.ViewModels
 {
     public class CaptionViewModel
     {
-        public int Caption_Id { get; set; }
+        public long Caption_Id { get; set; }
 
         public string Author_Id { get; set; }
 

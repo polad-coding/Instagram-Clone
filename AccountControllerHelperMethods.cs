@@ -21,12 +21,12 @@ namespace InstagramClone
         public static void CreateInstagramUser(IDbConnection connection, string userId, RegisterViewModel userInfo)
         {
             var p = new DynamicParameters();
-            p.Add("@Id", userId);
-            p.Add("@UserName", userInfo.User_Name);
-            p.Add("@Email", userInfo.Email);
-            p.Add("@FullName", userInfo.Full_Name);
+            p.Add("A_Id", userId);
+            p.Add("A_UserName", userInfo.User_Name);
+            p.Add("A_Email", userInfo.Email);
+            p.Add("A_FullName", userInfo.Full_Name);
 
-            connection.Execute("dbo.CreateInstagramUser", p, commandType: CommandType.StoredProcedure);
+            connection.Execute("CreateInstagramUser", p, commandType: CommandType.StoredProcedure);
         }
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace InstagramClone
             List<UserViewModel> followings = new List<UserViewModel>();
 
             var p = new DynamicParameters();
-            p.Add("@User_Id", userId);
+            p.Add("A_User_Id", userId);
 
-            followings = connection.Query<UserViewModel>("dbo.GetAllFollowingUsers", p, commandType: CommandType.StoredProcedure).ToList();
+            followings = connection.Query<UserViewModel>("GetAllFollowingUsers", p, commandType: CommandType.StoredProcedure).ToList();
 
             return followings;
         }
@@ -52,9 +52,9 @@ namespace InstagramClone
             List<UserViewModel> followers = new List<UserViewModel>();
 
             var p = new DynamicParameters();
-            p.Add("@User_Id", userId);
+            p.Add("A_User_Id", userId);
 
-            followers = connection.Query<UserViewModel>("dbo.GetAllFollowerUsers", p, commandType: CommandType.StoredProcedure).ToList();
+            followers = connection.Query<UserViewModel>("GetAllFollowerUsers", p, commandType: CommandType.StoredProcedure).ToList();
 
             return followers;
         }
@@ -69,13 +69,13 @@ namespace InstagramClone
         public static bool IsCurrentUserFollowing(IDbConnection connection, string currUserId, string followingUserId)
         {
             var p = new DynamicParameters();
-            p.Add("@Curr_User_Id", currUserId);
-            p.Add("@User_Id", followingUserId);
-            p.Add("@Responce", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+            p.Add("A_Curr_User_Id", currUserId);
+            p.Add("A_User_Id", followingUserId);
+            p.Add("A_Responce", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            connection.Execute("dbo.IsUserFollowing", p, commandType: CommandType.StoredProcedure);
-
-            bool isFollowing = Convert.ToBoolean(p.Get<int>("@Responce"));
+            connection.Execute("IsUserFollowing", p, commandType: CommandType.StoredProcedure);
+            var result = p.Get<ulong?>("A_Responce");
+            bool isFollowing = result == 0 ? false : true;
 
             return isFollowing;
         }
@@ -88,17 +88,17 @@ namespace InstagramClone
         /// <param name="imageData"></param>
         /// <param name="caption"></param>
         /// <returns></returns>
-        public static int AddPost(IDbConnection connection,string userId, byte[] imageData, string caption)
+        public static long AddPost(IDbConnection connection,string userId, byte[] imageData, string caption)
         {
             var p = new DynamicParameters();
-            p.Add("@User_Id", userId);
-            p.Add("@User_Caption", caption);
-            p.Add("@Picture", imageData);
-            p.Add("@Id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+            p.Add("A_User_Id", userId);
+            p.Add("A_User_Caption", caption);
+            p.Add("A_Picture", imageData);
+            p.Add("A_Id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            connection.Execute("dbo.AddPost", p, commandType: CommandType.StoredProcedure);
+            connection.Execute("AddPost", p, commandType: CommandType.StoredProcedure);
 
-            int newId = p.Get<int>("@Id");
+            long newId = p.Get<long>("A_Id");
 
             return newId;
         }
@@ -115,16 +115,16 @@ namespace InstagramClone
             char? genderToPass = model.Gender == null ? (char?)null : (model.Gender == "Men" ? 'm' : 'f');
 
             var p = new DynamicParameters();
-            p.Add("@Id", userId);
-            p.Add("@UserName", model.User_Name);
-            p.Add("@FullName", model.FullName);
-            p.Add("@Gender", genderToPass);
-            p.Add("@Email", model.Email);
-            p.Add("@Bio", model.Bio);
-            p.Add("@WebSiteLink", model.WebSiteLink);
-            p.Add("@ProfilePicture", imageData, DbType.Binary);
+            p.Add("A_Id", userId);
+            p.Add("A_UserName", model.User_Name);
+            p.Add("A_FullName", model.FullName);
+            p.Add("A_Gender", genderToPass);
+            p.Add("A_Email", model.Email);
+            p.Add("A_Bio", model.Bio);
+            p.Add("A_WebSiteLink", model.WebSiteLink);
+            p.Add("A_ProfilePicture", imageData, DbType.Binary);
 
-            connection.Execute("dbo.UpdateUserProfile", p, commandType: CommandType.StoredProcedure);
+            connection.Execute("UpdateUserProfile", p, commandType: CommandType.StoredProcedure);
         }
 
         /// <summary>
@@ -137,9 +137,9 @@ namespace InstagramClone
         {
             var p = new DynamicParameters();
 
-            p.Add("@User_Id", Id);
+            p.Add("A_User_Id", Id);
 
-            UserViewModel currUser = connection.QueryFirstOrDefault<UserViewModel>("dbo.IsUserExists", p, commandType: CommandType.StoredProcedure);
+            UserViewModel currUser = connection.QueryFirstOrDefault<UserViewModel>("IsUserExists", p, commandType: CommandType.StoredProcedure);
 
             return currUser;
         }
@@ -154,9 +154,9 @@ namespace InstagramClone
         {
             var p = new DynamicParameters();
 
-            p.Add("@User_Id", Id);
+            p.Add("A_User_Id", Id);
 
-            UserStatsModel userStats = connection.QueryFirst<UserStatsModel>("dbo.FindNumberOfFollowingsAndFollowers", p, commandType: CommandType.StoredProcedure);
+            UserStatsModel userStats = connection.QueryFirst<UserStatsModel>("FindNumberOfFollowingsAndFollowers", p, commandType: CommandType.StoredProcedure);
 
             return userStats;
         }
@@ -171,8 +171,8 @@ namespace InstagramClone
         {
             var p = new DynamicParameters();
 
-            p.Add("@Id", id);
-            List<PostViewModel> posts = connection.Query<PostViewModel>("dbo.GetPostsByUserId", p, commandType: CommandType.StoredProcedure).ToList();
+            p.Add("A_Id", id);
+            List<PostViewModel> posts = connection.Query<PostViewModel>("GetPostsByUserId", p, commandType: CommandType.StoredProcedure).ToList();
 
             return posts;
         }
@@ -187,9 +187,9 @@ namespace InstagramClone
         {
             var p = new DynamicParameters();
 
-            p.Add("@Curr_User_Id", curr_user_id);
+            p.Add("A_Curr_User_Id", curr_user_id);
 
-            List<UserViewModel> users = connection.Query<UserViewModel>("dbo.GetAllUsers", p, commandType: CommandType.StoredProcedure).ToList();
+            List<UserViewModel> users = connection.Query<UserViewModel>("GetAllUsers", p, commandType: CommandType.StoredProcedure).ToList();
 
             return users;
         }

@@ -7,7 +7,7 @@ namespace InstagramClone.ViewModels
 {
     public class PostViewModel
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public string IUser_Id { get; set; }
 
